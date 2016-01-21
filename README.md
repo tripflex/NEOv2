@@ -10,7 +10,21 @@
 57 65 20 68 61 76 65 20 61 6c 6c 20 74 68 65 20 6c 69 67 68 74 20 77 65 20 6e 65 65 64 2c 20 77 65 20
 6a 75 73 74 20 6e 65 65 64 20 74 6f 20 70 75 74 20 69 74 20 69 6e 20 70 72 61 63 74 69 63 65 2e 0d 0a
 ```
+
 ### Overview
+---
+This is an unofficial repository, I have no association with osm.codes other than my love for Ramiro and the fact that he has released an open source microlight.  Check the OSM Mode Swap facebook group for latest version and information.
+
+- **OSM v2 Instructions**:
+  - http://osm.codes/web/wp-content/uploads/2015/12/OSM_NEO_2-5_instructions.jpg
+
+*As of version 2.5.7br you need to use Arduino 1.6.5 as the latest version, 1.6.7 is currently not compatible*
+- **Arduino 1.6.5**:
+  - https://www.arduino.cc/en/Main/OldSoftwareReleases#previous
+
+
+
+### Details
 ---
 * Credits: AAA_CREDITS.ino
 * ♒ NEO ♒ for the Open Source Microlight
