@@ -48,7 +48,7 @@ void Alpha_Omega(void)// Blank Sleep
 		Serial.println(F("~OFF~")); ////// debug
 	}
 
-	long CountDownSleep = 7200;// 7200 = 1:00 min (120 counts x second) 
+	long CountDownSleep = 1200;// 7200 = 1:00 min (120 counts x second) 
 	while ( (CountDownSleep > 0) && (digitalRead (BUTTON) == HIGH) )
 	{
 		CountDownSleep--;
@@ -131,7 +131,7 @@ void Alpha_Omega(void)// Blank Sleep
 		EEPROM.write(0,0);// Reset Version value
 		eepromWriteFactory();
 		eepromLoad();
-		BLINKPWM(150,150,150 ,300,10);
+		BLINKPWM(150,150,150 ,100,5);
 		AllYourBaseAreBelongToUs = 0;
 	}// AllYourBaseAreBelongToUs
 

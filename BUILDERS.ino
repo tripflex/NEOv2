@@ -61,7 +61,6 @@ void osm_MASTER_BUILDER
 	ToBorNotToB = 1;
 	while ( (STATE == 2) && (GLOBALCHANGE) )// Color Change
 	{// state 2
-		//PRIMER(PrimeType[VARIATION]);
 		PRIMERCOLOR(PrimeType[VARIATION]);
 		PushYcolors();
 	}// state 2

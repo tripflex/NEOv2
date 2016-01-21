@@ -80,19 +80,23 @@ void mmaSensor( byte MMAselectMMA, byte mmaAxisMMA, int SensCounterMMA, byte PAc
 				accelCounter=0;
 				if ( ShakeX || ShakeY || ShakeZ )
 				{// if Shake
-					if (VARIATION == 1) {;}
+					if (VARIATION == 1) 
+					{;}
 					
 					else
-					{VARIATION = 1; ToBorNotToB = 0;}
+					{
+						VARIATION = 1; ToBorNotToB = 0;
+					}
 					
 					ShakeX = 0;
 					ShakeY = 0;
 					ShakeZ = 0;
 				}// fi Shake
+				
 				else
+				
 				{// else
 					VARIATION = 0;
-					//if (VARIATION == 1) {ToBorNotToB = false;}
 				}// esle
 				
 			}// fi accelCounter

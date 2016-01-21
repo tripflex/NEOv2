@@ -1,5 +1,3 @@
-  
-
 /*
                                      ____   _____ __  __                     _
                                     / __ \ / ____|  \/  |                   | |
@@ -19,6 +17,7 @@ __      ____      ____      __     | |  | | (___ | \  / |       ___ ___   __| | 
 * Author: Ramiro Montes De Oca
 * Product Page: http://www.osm.codes
 * Support: http://support.osm.codes
+* Facebook Tech Support Group:https://www.facebook.com/groups/osmTechSupport/
 * Facebook Users Group: https://www.facebook.com/groups/osmModeSwap/
 * Facebook Dev Group: https://www.facebook.com/groups/OSMdevelopers/
 * Facebook Product Page: https://www.facebook.com/osmcodes
@@ -72,14 +71,26 @@ Many things happened in between these versions
 		   
 * 2.5.3bd  - Added missing accelerometer sensitivity (Debug)
            - FIXING THE SLEEP MODE 	
-   		   - OSM1 SUPPORT: UNCOMMENT LINE 92 FOR OSM SUPPORT (FIRST LINE OF THE PROGRAM)	   
+   		   - OSM1 SUPPORT: UNCOMMENT LINE 94 FOR OSM SUPPORT (FIRST LINE OF THE PROGRAM)	   
 
 * 2.5.4bd  - Kroma variation  
            - Removed SLEEP MODE killer suspect
 		   
 		   
-* 2.5.5bd  - Dimmed Colors
-  		        
+* 2.5.5bd - Dimmed Colors
+
+* 2.5.61  - Added delays to I2C
+
+* 2.5.62  - Added EEPROM wipe
+
+* 2.5.63  - I2C back delay CLEANUP
+          - CTRL_REG1 CLEANUP
+		  - Changed modes
+		  
+* 2.5.7br  - (2.5.63 release)	
+           - Rule 11
+
+ 		        
 **********************************************************************************************/
 
 
@@ -88,9 +99,15 @@ Many things happened in between these versions
 /// THE PROGRAM STARTS HERE ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
-//#define OSMONETRUE // UNCOMMENT THIS LINE FOR OSM1 
+// OSM1 : UNCOMMENT THE NEXT LINE (REMOVING THE "//") FOR OSM 1 
+// #define OSMONETRUE 
+
+
+
+
+//#define DEBUGI2C
 #define DEBUGRUN 
-#define PRINTVERSION Serial.println(F("> NEO * 2.5.5bd - Kroma Edition (Take 3)")); 
+#define PRINTVERSION Serial.println(F("> NEO * 2.5.7br - Rule 11")); 
 
 //#define SLIDERPRO
 //#define EEPROM_DEBUG
@@ -415,11 +432,8 @@ void setup()
 	
 	ACCEL_INIT();
 	
-
-	//PrintWelcome1(); // This is the welcome intro for the Serial Communication
 	eepromWriteFactory();// Factory Reset (if)
 	eepromLoad();// Load EEPROM to SRAM
-	//PrintWelcome2();
 	AnalogBlank(); // turn off LED
 	STATE = 1;
 	VARIATION = 0;
@@ -545,11 +559,11 @@ while (Mode == 2 && GLOBALCHANGE )// Mode
 
 	#if defined(OSMONETRUE) // if OSM ONE
 		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,               1,      17.3,       17.3,       0,    0,    0,        1,       17.3,      17.3,     0,    0,    0     ) ;
+		osm_MASTER_BUILDER (       2,       2,         30,           80,               1,      17.3,       17.3,       0,    0,    0,        1,       2,      2,     0,    0,    0     ) ;
 		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
 	#else
 		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,               1,      17.3,       17.3,       0,    0,    0,        1,       17.3,      17.3,     0,    0,    0     ) ;
+		osm_MASTER_BUILDER (       2,       2,         30,           80,               1,      17.3,       17.3,       0,    0,    0,        1,       2,      2,     0,    0,    0     ) ;
 		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
 	#endif
 	
@@ -594,11 +608,11 @@ while (Mode == 3 && GLOBALCHANGE )// Mode
 
 	#if defined(OSMONETRUE) // if OSM ONE
 		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,             1,      2.5,       4.7,       0,    0,    0,        1,       2.5,       4.7,       0,     0,    0     ) ;
+		osm_MASTER_BUILDER (       2,       2,         30,           80,              5,      2.5,       2,       1,    360,    0,        1,      2.5,       2,       5,    360,    0      ) ;
 		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
 	#else
 		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,              1,      2.5,       4.7,       0,    0,    0,        1,       2.5,       4.7,       0,     0,    0     ) ;
+		osm_MASTER_BUILDER (       2,       2,         30,           80,              5,      2.5,       2,       1,    360,    0,        1,      2.5,       2,       5,    0,    0   ) ;
 		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
 	#endif
 
@@ -645,7 +659,7 @@ while (Mode == 4 && GLOBALCHANGE )// Mode
 		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
 	#else
 		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,               1,      3.2,       23.2,       0,    0,    0,        1,       3.2,      23.2,     0,    0,    0     ) ;
+		osm_MASTER_BUILDER (       2,       2,         30,           80,               1,      3.2,       23.2,       0,    0,    0,        2,       3.2,      23.2,     0,    0,    0     ) ;
 		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
 	#endif
 	
@@ -841,11 +855,11 @@ while (Mode == 8 && GLOBALCHANGE )// Mode
 
 	#if defined(OSMONETRUE) // if OSM ONE
 		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,             1,       2.6,        1.2,     120,    0,    0,      1,      2.6,       1.2,       120,    0,    0     ) ;
+		osm_MASTER_BUILDER (       2,       2,         30,           80,             1,       2.6,        1.2,     120,    0,    0,        1,       2.6,        1.2,     5,    0,    0     ) ;
 		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
 	#else
 		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,            1,       2.6,        1.2,     120,    0,    0,      1,      2.6,       1.2,       120,    0,    0     ) ;
+		osm_MASTER_BUILDER (       2,       2,         30,           80,            1,       2.6,        1.2,     120,    0,    0,        1,       2.6,        1.2,     5,    0,    0    ) ;
 		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
 	#endif
 	

@@ -4,6 +4,7 @@
 ///////////////////
 ///////////////////
 
+#include <EEPROM.h>
 
 void eeCheck(void)
 {// void eeCheck
@@ -48,16 +49,36 @@ void eepromWriteFactory(void)
 	else
 	{
 		
-		#if defined(VISUAL)
-			Serial.print(F(">...UPLOADING NEW VERSION "));
-		#endif
+		//////////////////////////////////////
+		// disabled on 2.5.62
 		
-		byte DeleteCounter = 19;
-		while (DeleteCounter > 0)
-		{
-			eeCheck();EEPROM.write(DeleteCounter,0);eeCheck();
-			DeleteCounter--;
-		} 
+		//#if defined(VISUAL)
+			//Serial.print(F(">...UPLOADING NEW VERSION "));
+		//#endif
+		//
+		//byte DeleteCounter = 19;
+		//while (DeleteCounter > 0)
+		//{
+			//eeCheck();EEPROM.write(DeleteCounter,0);eeCheck();
+			//DeleteCounter--;
+		//} 
+		//////////////////////////////////////
+		
+		
+		//////////////////////////////////////////
+		// added on 2.5.62 complete eeprom wipe
+		  digitalWrite(RED, HIGH);
+		  int iee = 0;
+		  while ( iee < 1024)
+		 {
+		  eeCheck();
+		  EEPROM.write(iee, 0);
+		  eeCheck();
+		  iee++;
+		 }
+		 digitalWrite(RED, LOW);
+		/////////////////////////////////////
+		
 		
 		eeCheck();
 		EEPROM.write(0,0);// Reset Version value
@@ -73,7 +94,7 @@ void eepromWriteFactory(void)
 		PROGset = 0;
 		PROGMEMbank = 0;
 		EEbank = 0;
-		while (EEbank != 468)// was 864
+		while (EEbank != 468)
 		{// while ClearCount
 			eeCheck();
 			EEPROM.write((EEbank+20), (pgm_read_word_near(&(ModeSetFLASH[PROGset][(PROGMEMbank)]))));
@@ -83,9 +104,9 @@ void eepromWriteFactory(void)
 			if (PROGMEMbank == 36) {PROGset++; PROGMEMbank=0;}
 		}// elihw ClearCount
 		
-		//eeCheck();
-		//DumpEEprom();
-		//eeCheck();
+		#if defined(EEPROM_DEBUG)
+		DumpEEprom(); // for debug
+		#endif
 		
 		#if defined(VISUAL)
 			Serial.print(F(">...NEW EEPROM VERSION "));
@@ -140,9 +161,9 @@ void eepromLoad(void)
 		eeCheck();
 	}
     
-	//eeCheck();
-	//DumpSRAM();	
-	//eeCheck();
+	#if defined(EEPROM_DEBUG)
+	DumpSRAM();	// debug
+	#endif
 	
 	#if defined(VISUAL)
 		Serial.print(F(">LOADED.... EEPROM VERSION "));

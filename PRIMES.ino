@@ -37,7 +37,7 @@ void PRIMER(byte PrimeSelector)
 	
 	
 	
-	if (PrimeSelector == 5)
+	if (PrimeSelector == 5 )
 	{// if 5
 		PRIME_TRIPLERAINBOW(ColorTime[VARIATION],BlankTime[VARIATION],Val1[VARIATION], Val2[VARIATION]);
 		                 //( int RainbowTime,    int RainBlankTime,   byte numRainbows, int numColors)

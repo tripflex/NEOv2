@@ -84,3 +84,18 @@
 
 * **2.5.5bd**  
   - Dimmed Colors
+
+* **2.5.61**  
+  - Added delays to I2C
+
+* **2.5.62**
+  - Added EEPROM wipe
+
+* **2.5.63**
+  - I2C back delay CLEANUP
+  - CTRL_REG1 CLEANUP
+  - Changed modes
+
+* **2.5.7br**  
+  - (2.5.63 release)
+  - Rule 11
