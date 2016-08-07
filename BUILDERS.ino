@@ -3,7 +3,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 void osm_MASTER_BUILDER
-(volatile byte MMAselect,  volatile byte mmAxis,  int AccelCounter, byte Accel865xSensitivity,
+(volatile byte MMAselect,  volatile byte mmAxis,  int AccelCounter, int Accel865xSensitivity,
  volatile byte PrimeA, volatile int ColorTimeA, volatile int BlankTimeA,  volatile int Val1A, volatile int Val2A, volatile boolean VPA,  
  volatile byte PrimeB, volatile int ColorTimeB, volatile int BlankTimeB,  volatile int Val1B, volatile int Val2B, volatile boolean VPB)
 {
@@ -14,7 +14,7 @@ void osm_MASTER_BUILDER
 		Debouncer = 0;
 		PMMAselect = MMAselect;
 		PmmAxis = mmAxis;
-		PAccelCounter = AccelCounter*10;
+		PAccelCounterDebouncer = AccelCounter*10;
 		PAccelSensitivity = Accel865xSensitivity;	
 		PrimeType[0] = PrimeA;
 		PrimeType[1] = PrimeB;
@@ -34,8 +34,6 @@ void osm_MASTER_BUILDER
 		FloatResult = BPM_Bars(BPM_Selector,2);
 		BPM_Factor = FloatResult;
 		SetSelection(PMMAselect,PmmAxis,PrimeType[0],PrimeType[1]);
-		
-		//if (MMAselect == 3) {I2C_MMA_enableFreeFallInterrupt(Accel865xSensitivity);}
 
 	}// fi JUSTONCE
 	

@@ -49,22 +49,7 @@ void eepromWriteFactory(void)
 	else
 	{
 		
-		//////////////////////////////////////
-		// disabled on 2.5.62
-		
-		//#if defined(VISUAL)
-			//Serial.print(F(">...UPLOADING NEW VERSION "));
-		//#endif
-		//
-		//byte DeleteCounter = 19;
-		//while (DeleteCounter > 0)
-		//{
-			//eeCheck();EEPROM.write(DeleteCounter,0);eeCheck();
-			//DeleteCounter--;
-		//} 
-		//////////////////////////////////////
-		
-		
+
 		//////////////////////////////////////////
 		// added on 2.5.62 complete eeprom wipe
 		  digitalWrite(RED, HIGH);

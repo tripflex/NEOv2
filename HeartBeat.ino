@@ -48,7 +48,7 @@ void PRIME_HEARTBEAT(byte BeatColor)
 		}
 		
 		//mmaTeleShake_Change_1to2(2);
-		mmaSensor(PMMAselect, PmmAxis, PAccelCounter, PAccelSensitivity);
+		mmaSensor(PMMAselect, PmmAxis, PAccelCounterDebouncer, PAccelSensitivity);
 	}// ELIHW STEP 1
 	//////////////////////// STEP 1
     //debug(0);
@@ -60,7 +60,7 @@ void PRIME_HEARTBEAT(byte BeatColor)
 		out = sin(in) * 127.5 + 127.5;
 		analogWrite(5,out);
 		//mmaTeleShake_Change_1to2(2);
-		mmaSensor(PMMAselect, PmmAxis, PAccelCounter, PAccelSensitivity);
+		mmaSensor(PMMAselect, PmmAxis, PAccelCounterDebouncer, PAccelSensitivity);
 	}// ELIHW STEP 2
 	//////////////////////// STEP 2
 	

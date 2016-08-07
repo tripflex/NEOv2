@@ -21,7 +21,31 @@
 	{
 		;
 	}
+	
+	
 
+// INTERRUPT ON ACCELEROMETER
+void pi2cInterrupt()
+{
+digitalWrite(BLUE, HIGH);
+digitalWrite(7, HIGH);// DEBUG
+delay(500);
+digitalWrite(BLUE, LOW);
+digitalWrite(7, LOW);// DEBUG
+delay(500);
+Serial.println("Interrupt!!!!!!!!!!!!!!!!!!!! ");
+}
+
+
+
+
+//// INTERRUPT ON ACCELEROMETER
+//ISR(INT1_vect)
+//{
+	//digitalWrite(BLUE, HIGH);
+	//delay(500);
+	//digitalWrite(BLUE, LOW);
+//}
 
 
 

@@ -1,13 +1,15 @@
 // MMAsensor.ino
 
 
-volatile boolean ShakeX;
-volatile boolean ShakeY;
-volatile boolean ShakeZ;
+//volatile boolean ShakeX;/// DISABLED FOR V2.1
+//volatile boolean ShakeY;/// DISABLED FOR V2.1
+//volatile boolean ShakeZ;/// DISABLED FOR V2.1
+volatile boolean ShakeXYZ;// ADDED FOR OSMV2.1
+
 
 //--------------------------------------------------------------------------------------------------
 
-void mmaSensor( byte MMAselectMMA, byte mmaAxisMMA, int SensCounterMMA, byte PAccelSensitivityMMA )
+void mmaSensor( byte MMAselectMMA, byte mmaAxisMMA, int SensDebouncer, int PAccelSensitivityMMA )
 {// void mmaSensor
 	
 ////=====================================================================================================
@@ -18,35 +20,37 @@ void mmaSensor( byte MMAselectMMA, byte mmaAxisMMA, int SensCounterMMA, byte PAc
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		if ((MMAselectMMA == 1) && (ToBorNotToB))// Tilt
 		{// if Tilt
-			int Accel[3];
+			
 			accelCounter++;
-			if (accelCounter>SensCounterMMA)
+			if (accelCounter>SensDebouncer)
 			{// if SenseY
+		         
+				//int Accel[3];/// DISABLED FOR OSMV2.1
+                //I2C_ACC_GET_XYZ(&xAcc,&yAcc,&zAcc);/// DISABLED FOR OSMV2.1
+				//Accel[0] = xAcc;/// DISABLED FOR OSMV2.1
+				//Accel[1] = yAcc;/// DISABLED FOR OSMV2.1
+				//Accel[2] = zAcc;/// DISABLED FOR OSMV2.1
 				
-							 
-                I2C_ACC_GET_XYZ(&xAcc,&yAcc,&zAcc);
+				int AccelResult = TWADC_ACC_GET_VAL(mmaAxisMMA);// ADDED FOR OSMV2.1
 				
-				Accel[0] = xAcc;
-				Accel[1] = yAcc;
-				Accel[2] = zAcc;
-				
-				if ((Accel[mmaAxisMMA])  > 1 && (ToBorNotToB))
+				if ((AccelResult)  > 1 && (ToBorNotToB))// CHANGED ON V2.1
 				{// if Tilt
 					if (VARIATION == 0) {;}
 					else
 					{VARIATION = 0; ToBorNotToB = 0;}
 				}// fi Tilt
 				
-				if ((Accel[mmaAxisMMA])  < 1 && (ToBorNotToB))
+				if ((AccelResult)  < 1 && (ToBorNotToB))// CHANGED ON V2.1
 				{// if Tilt
 					if (VARIATION == 1) {;}
 					else
 					{VARIATION = 1; ToBorNotToB = 0;}
 				}// fi Tilt
 				
-				xAcc = 0;// clear
-				yAcc = 0;// clear
-				zAcc = 0;// clear
+				//xAcc = 0;/// DISABLED FOR OSMV2.1
+				//yAcc = 0;/// DISABLED FOR OSMV2.1
+				//zAcc = 0;/// DISABLED FOR OSMV2.1
+				AccelResult = 0;// ADDED FOR OSMV2.1
 				accelCounter=0;
 			}// fi Sensey
 		}// fi Tilt
@@ -58,27 +62,32 @@ void mmaSensor( byte MMAselectMMA, byte mmaAxisMMA, int SensCounterMMA, byte PAc
 		if ((MMAselectMMA == 2) && (ToBorNotToB))// Shake
 		{// if Shake
 			accelCounter++;
-			if (accelCounter>(SensCounterMMA) && (ToBorNotToB))
+			if (accelCounter>(SensDebouncer) && (ToBorNotToB))
 			{// if accelCounter
-				I2C_ACC_GET_XYZ(&xAcc,&yAcc,&zAcc);
+				//I2C_ACC_GET_XYZ(&xAcc,&yAcc,&zAcc);// DISABLED
 
+                int AccelResultIs = TWADC_ACC_GET_VAL(mmaAxisMMA);// ADDED FOR OSMV2.1
+				
 				if (OSMONE)
 				{// if OSM1
-					if ((xAcc < 37) && (xAcc > 24) )   {ShakeX = 1;} else {ShakeX = 0;}
-					if ((yAcc < 37) && (yAcc > 24) )   {ShakeY = 1;} else {ShakeY = 0;}
-					if ((zAcc < 37) && (zAcc > 24) )   {ShakeZ = 1;} else {ShakeZ = 0;}
+					//if ((xAcc < 37) && (xAcc > 24) )   {ShakeX = 1;} else {ShakeX = 0;}/// DISABLED FOR OSMV2.1
+					//if ((yAcc < 37) && (yAcc > 24) )   {ShakeY = 1;} else {ShakeY = 0;}/// DISABLED FOR OSMV2.1
+					//if ((zAcc < 37) && (zAcc > 24) )   {ShakeZ = 1;} else {ShakeZ = 0;}/// DISABLED FOR OSMV2.1
+					if ((AccelResultIs < 37) && (AccelResultIs > 24) )   {ShakeXYZ = 1;} else {ShakeXYZ = 0;}// ADDED FOR OSMV2.1
 				}// fi OSM1
 
 				else
 				{// if OSM2
-					if ((xAcc < (-abs(PAccelSensitivityMMA)) ) || (xAcc > PAccelSensitivityMMA) )   {ShakeX = 1;} else {ShakeX = 0;}
-					if ((yAcc < (-abs(PAccelSensitivityMMA)) ) || (yAcc > PAccelSensitivityMMA) )   {ShakeY = 1;} else {ShakeY = 0;}
-					if ((zAcc < (-abs(PAccelSensitivityMMA)) ) || (zAcc > PAccelSensitivityMMA) )   {ShakeZ = 1;} else {ShakeZ = 0;}
-				}//
+					//if ((xAcc < (-abs(PAccelSensitivityMMA)) ) || (xAcc > PAccelSensitivityMMA) )   {ShakeX = 1;} else {ShakeX = 0;}/// DISABLED FOR OSMV2.1
+					//if ((yAcc < (-abs(PAccelSensitivityMMA)) ) || (yAcc > PAccelSensitivityMMA) )   {ShakeY = 1;} else {ShakeY = 0;}/// DISABLED FOR OSMV2.1
+					//if ((zAcc < (-abs(PAccelSensitivityMMA)) ) || (zAcc > PAccelSensitivityMMA) )   {ShakeZ = 1;} else {ShakeZ = 0;}/// DISABLED FOR OSMV2.1
+					  if ((zAcc < (-abs(PAccelSensitivityMMA)) ) || (AccelResultIs > PAccelSensitivityMMA) )   {ShakeXYZ = 1;} else {ShakeXYZ = 0;}	// ADDED FOR OSMV2.1
+				}// fi OSM2
 								
 
 				accelCounter=0;
-				if ( ShakeX || ShakeY || ShakeZ )
+				//if ( ShakeX || ShakeY || ShakeZ )/// DISABLED FOR OSMV2.1
+				if ( ShakeXYZ )// ADDED FOR OSMV2.1
 				{// if Shake
 					if (VARIATION == 1) 
 					{;}
@@ -88,9 +97,10 @@ void mmaSensor( byte MMAselectMMA, byte mmaAxisMMA, int SensCounterMMA, byte PAc
 						VARIATION = 1; ToBorNotToB = 0;
 					}
 					
-					ShakeX = 0;
-					ShakeY = 0;
-					ShakeZ = 0;
+					//ShakeX = 0;/// DISABLED FOR OSMV2.1
+					//ShakeY = 0;/// DISABLED FOR OSMV2.1
+					//ShakeZ = 0;/// DISABLED FOR OSMV2.1
+					ShakeXYZ = 0;// ADDED FOR OSMV2.1
 				}// fi Shake
 				
 				else
@@ -126,29 +136,33 @@ void mmaSensor( byte MMAselectMMA, byte mmaAxisMMA, int SensCounterMMA, byte PAc
 			////////////////////// Debounce
 			
 			
-			if (accelCounter>(SensCounterMMA) && (ToBorNotToB))
+			if (accelCounter>(SensDebouncer) && (ToBorNotToB))
 			{// if accelCounter
-				I2C_ACC_GET_XYZ(&xAcc,&yAcc,&zAcc);
-
+				//I2C_ACC_GET_XYZ(&xAcc,&yAcc,&zAcc);/// DISABLED FOR OSMV2.1
+			    int AccelResult = TWADC_ACC_GET_VAL(mmaAxisMMA);// ADDED FOR OSMV2.1
+				
 				if (OSMONE)
 				{// if OSM1
-				if ((xAcc < 37) && (xAcc > 24) )   {ShakeX = 1;} else {ShakeX = 0;}
-				if ((yAcc < 37) && (yAcc > 24) )   {ShakeY = 1;} else {ShakeY = 0;}
-				if ((zAcc < 37) && (zAcc > 24) )   {ShakeZ = 1;} else {ShakeZ = 0;}
+				//if ((xAcc < 37) && (xAcc > 24) )   {ShakeX = 1;} else {ShakeX = 0;}/// DISABLED FOR OSMV2.1
+				//if ((yAcc < 37) && (yAcc > 24) )   {ShakeY = 1;} else {ShakeY = 0;}/// DISABLED FOR OSMV2.1
+				//if ((zAcc < 37) && (zAcc > 24) )   {ShakeZ = 1;} else {ShakeZ = 0;}/// DISABLED FOR OSMV2.1
+				if ((AccelResult < 37) && (AccelResult > 24) )   {ShakeXYZ = 1;} else {ShakeXYZ = 0;}// ADDED FOR OSMV2.1
 				}// fi OSM1
 
 
 				else
 				{// if OSM2
-					if ((xAcc < (-abs(PAccelSensitivityMMA)) ) || (xAcc > PAccelSensitivityMMA) )   {ShakeX = 1;} else {ShakeX = 0;}
-					if ((yAcc < (-abs(PAccelSensitivityMMA)) ) || (yAcc > PAccelSensitivityMMA) )   {ShakeY = 1;} else {ShakeY = 0;}
-					if ((zAcc < (-abs(PAccelSensitivityMMA)) ) || (zAcc > PAccelSensitivityMMA) )   {ShakeZ = 1;} else {ShakeZ = 0;}
+					//if ((xAcc < (-abs(PAccelSensitivityMMA)) ) || (xAcc > PAccelSensitivityMMA) )   {ShakeX = 1;} else {ShakeX = 0;}/// DISABLED FOR OSMV2.1
+					//if ((yAcc < (-abs(PAccelSensitivityMMA)) ) || (yAcc > PAccelSensitivityMMA) )   {ShakeY = 1;} else {ShakeY = 0;}/// DISABLED FOR OSMV2.1
+					//if ((zAcc < (-abs(PAccelSensitivityMMA)) ) || (zAcc > PAccelSensitivityMMA) )   {ShakeZ = 1;} else {ShakeZ = 0;}/// DISABLED FOR OSMV2.1
+					if ((AccelResult < (-abs(PAccelSensitivityMMA)) ) || (AccelResult > PAccelSensitivityMMA) )   {ShakeXYZ = 1;} else {ShakeXYZ = 0;}// ADDED FOR OSMV2.1
 				}//
 								
 
 				accelCounter=0;
 
-				if ( ShakeX || ShakeY || ShakeZ )
+				//if ( ShakeX || ShakeY || ShakeZ )/// DISABLED FOR OSMV2.1
+				if ( ShakeXYZ )// ADDED FOR OSMV2.1
 				{// if Shake
 					if (VARIATION == 1) 
 					{
@@ -163,11 +177,13 @@ void mmaSensor( byte MMAselectMMA, byte mmaAxisMMA, int SensCounterMMA, byte PAc
 						VARIATION = 1;
 						ToBorNotToB = 0;
 					}
-					
-					Debouncer = 1;
-					ShakeX = 0;
-					ShakeY = 0;
-					ShakeZ = 0;
+					//Serial.print("AccelResult: ");Serial.print(AccelResult,DEC); // debug
+					//Serial.print("   PAccelSensitivityMMA: ");Serial.println(PAccelSensitivityMMA,DEC); // debug
+				Debouncer = 1;
+				//xAcc = 0;/// DISABLED FOR OSMV2.1
+				//yAcc = 0;/// DISABLED FOR OSMV2.1
+				//zAcc = 0;/// DISABLED FOR OSMV2.1
+				AccelResult = 0;// ADDED FOR OSMV2.1
 				}// fi Shake
 
 				
@@ -185,38 +201,6 @@ void mmaSensor( byte MMAselectMMA, byte mmaAxisMMA, int SensCounterMMA, byte PAc
 
 
 
-
-
-
-
-
-//void FreeFall()
-//{
-	  //// Read source of interrupt
-	  //intSource = I2C_readByte(MMA8652_INT_SOURCE);
-//
-	  //if(intSource & SRC_FF_MT_MASK)
-	  //{
-		  //if (OnlyONce)
-		  //{
-			  //if (VARIATION)
-			  //{
-				  //VARIATION = 0;
-			  //}
-			  //else
-			  //{
-				  //VARIATION = 1;
-			  //}
-		  //}
-//
-	  //}
-	  //
-	  //else
-	  //{
-		  //OnlyONce = 1;
-	  //}
-	  //
-//}
 
 
 

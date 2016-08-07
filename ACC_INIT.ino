@@ -9,10 +9,6 @@
  */
  
 
-
-
-
-
 //#define MMA7660_ADDRESS 0x4C //This is the I2C address for our chip.
 //#define MMA865X_ADDRESS 0x1D //This is the I2C address for our chip.
 
@@ -23,6 +19,8 @@
 //----------------------------------------------------------------------
 
 ///// DEFINES FOR MMA865X ////////////////////////////
+
+
 
 // XYZ_DATA_CFG_ Data Config REGISTER DEFINES
 #define TWO_G   B00000000
@@ -40,14 +38,14 @@
 #define HZ1_ACTIVE     B01111001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 1.56Hz 640ms / (b1) No Fast Read / (b0) Full Scale
 
 // CTRL_REG1_ Control Reg1 Hz DEFINES STAND BY
-#define HZ800_STANDBY   B01000001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 800Hz 1.25ms / (b1) No Fast Read / (b0) Full Scale
-#define HZ400_STANDBY   B01001001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 400Hz 2.5ms  / (b1) No Fast Read / (b0) Full Scale
-#define HZ200_STANDBY   B01010001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 200Hz 5ms    / (b1) No Fast Read / (b0) Full Scale
-#define HZ100_STANDBY   B01011001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 100Hz 10ms   / (b1) No Fast Read / (b0) Full Scale
-#define HZ50_STANDBY    B01100001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 50Hz 20ms    / (b1) No Fast Read / (b0) Full Scale
-#define HZ12_STANDBY    B01101001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 12.5Hz 80ms  / (b1) No Fast Read / (b0) Full Scale
-#define HZ6_STANDBY     B01110001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 6.25Hz 160ms / (b1) No Fast Read / (b0) Full Scale
-#define HZ1_STANDBY     B01111001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 1.56Hz 640ms / (b1) No Fast Read / (b0) Full Scale
+#define HZ800_STANDBY   B01000000    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 800Hz 1.25ms / (b1) No Fast Read / (b0) Full Scale
+#define HZ400_STANDBY   B01001000    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 400Hz 2.5ms  / (b1) No Fast Read / (b0) Full Scale
+#define HZ200_STANDBY   B01010000    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 200Hz 5ms    / (b1) No Fast Read / (b0) Full Scale
+#define HZ100_STANDBY   B01011000    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 100Hz 10ms   / (b1) No Fast Read / (b0) Full Scale
+#define HZ50_STANDBY    B01100000    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 50Hz 20ms    / (b1) No Fast Read / (b0) Full Scale
+#define HZ12_STANDBY    B01101000    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 12.5Hz 80ms  / (b1) No Fast Read / (b0) Full Scale
+#define HZ6_STANDBY     B01110000    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 6.25Hz 160ms / (b1) No Fast Read / (b0) Full Scale
+#define HZ1_STANDBY     B01111000    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 1.56Hz 640ms / (b1) No Fast Read / (b0) Full Scale
 
 
 
@@ -102,60 +100,42 @@
 #define CTRL_REG5_    0x2E // Control Reg5 / Interrupt Configuration
 
 
-
-
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-///////// MACROS
-
-
-
-//------------------------------------------------------------------
 
 //// used for MMA7660
+
 int MMA_Nar[64] =  {-0,-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,-23,-24,-25,-26,-27,-28,-29,-30,-31,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1};
 int MMA_Par[64] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,-32,-31,-30,-29,-28,-27,-26,-25,-24,-23,-22,-21,-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1};
 
-
-//int MMA_XYar[64] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,-32,-31,-30,-29,-28,-27,-26,-25,-24,-23,-22,-21,-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1};
-//int MMA_Zar[64] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,-32,-31,-30,-29,-28,-27,-26,-25,-24,-23,-22,-21,-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1};
-
-
-
 //------------------------------------------------------------------
 
 
-
-	 //#if defined(OSMONETRUE)
-	 //
-	 //#else
-	 //
-	 //#endif
 
 
 void ACCEL_INIT(void)// Init MMA865X or MMA7660
 {// VOID ACCEL_INIT
 	
+digitalWrite(LDO, HIGH); // Power LDO ON
+delay(5);
 
-	Wire.begin(); delay(1); // start of the i2c protocol
-	
-	 #if defined(OSMONETRUE)
-	    DEVICEID = 0;
+
+	#if defined(OSMONETRUE)
+	    Wire.begin(); delay(1); // start of the i2c protocol
+		DEVICEID = 0;
 		OSMONE = 1;
 		MMA_ADDRESS = 0x4C; //This is the I2C address for MMA7660
-		Serial.println(F("MMA_ADDRESS = 0x4C;"));		
-	 #else 
-  	    DEVICEID = 0x4A; // 0x4A MMA8652 // 0x5A MMA8653
+    	//Serial.println(F("MMA_ADDRESS = 0x4C;"));		
+	#else 
+   	    TWADC_begin(); delay(1); // start of the i2c protocol
+		DEVICEID = 0x4A; // 0x4A MMA8652 // 0x5A MMA8653
 		OSMONE = 0;
 		MMA_ADDRESS = 0x1D; //This is the I2C address for MMA865X
-		Serial.println(F("MMA_ADDRESS = 0x1D;"));	 
-	 #endif
+		//Serial.println(F("MMA_ADDRESS = 0x1D;"));	 
+	#endif
 	
 	
 
@@ -166,476 +146,531 @@ void ACCEL_INIT(void)// Init MMA865X or MMA7660
 		I2C_SEND(0x06,0x10);
 		I2C_SEND(0x08,0x00);  // Setting up SR register to 120 samples active and auto sleep mode
 		I2C_SEND(0x07,0x01); //Setting up MODE Active to START measures
-	
+			
 	#else // IS OSM TWO
 	
-		Serial.println(F("> OSMTWO"));	
+		//Serial.println(F("> OSMTWO"));	
 		
 		/* REGISTERS
 		// XYZ_DATA_CFG_ Data Config REGISTER DEFINES
 		#define TWO_G   B00000000
 		#define FOUR_G  B00000001
 		#define EIGHT_G B00000010
-
-		// CTRL_REG1_ Control Reg1 Hz DEFINES
-		#define HZ800   B01000001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 800Hz 1.25ms / (b1) No Fast Read / (b0) Full Scale
-		#define HZ400   B01001001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 400Hz 2.5ms  / (b1) No Fast Read / (b0) Full Scale
-		#define HZ200   B01010001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 200Hz 5ms    / (b1) No Fast Read / (b0) Full Scale
-		#define HZ100   B01011001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 100Hz 10ms   / (b1) No Fast Read / (b0) Full Scale
-		#define HZ50    B01100001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 50Hz 20ms    / (b1) No Fast Read / (b0) Full Scale
-		#define HZ12    B01101001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 12.5Hz 80ms  / (b1) No Fast Read / (b0) Full Scale
-		#define HZ6     B01110001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 6.25Hz 160ms / (b1) No Fast Read / (b0) Full Scale
-		#define HZ1     B01111001    // (b7-6)Sleep @ 12.5hz - 80ms / (b5-4-3) 1.56Hz 640ms / (b1) No Fast Read / (b0) Full Scale
 		*/
 		
 		// Default
-		GRANGE = EIGHT_G;
-		OUTDATARANGE = HZ50_ACTIVE;
+		GRANGE = B00000010 ;// XYZ_DATA_CFG 
+		/*
+		//////////////////////////////////////////////////////////////////////
+		/// XYZ_DATA_CFG (0x0E)
+		----------------------------------------------------------------------
+		b7  | 0 |  ------------
+		----------------------------------------------------------------------
+		b6  | 0 |  ------------
+		----------------------------------------------------------------------
+		b5  | 0 |  ------------
+		----------------------------------------------------------------------
+		b4  | 0 |  OUTPUT DATA HIGH-PASS FILTER | 0* NORMAL / 1 HPF
+		----------------------------------------------------------------------
+		b3  | 0 |  ------------
+		----------------------------------------------------------------------
+		b2  | 0 |  ------------
+		----------------------------------------------------------------------
+		b1  | 0 |  FULL SCALE RANGE 1
+		----------------------------------------------------------------------
+		b0  | 0 |  FULL SCALE RANGE 0
+		----------------------------------------------------------------------
+		//////////////////////////////////////////////////////////////////////
+		+==================================+
+		|  FS1  |  FS0  | FULL SCALE RANGE |
+		+=======|=======|==================+  
+		|   0   |   0   |      +/-2G       |
+		|   0   |   1   |      +/-4G       |
+		|   1   |   0   |      +/-8G       |*
+		|   1   |   1   |     RESERVED     |
+		+==================================+   
+		*/		
 		
+		
+		OUTDATARANGE_STANDBY = B00100000; // STANDBY
+		OUTDATARANGE_ACTIVE  = B00100001; // ACTIVE
+		/* B00100000 (stand by)  / B00100001 (ACTIVE)
+		//////////////////////////////////////////////////////
+		/// CTRL_REG1 (0x2A)
+		======================================================
+		b7  | 0 |  ASLP-RATE-1    0* = 50HZ
+		------------------------------------------------------
+		b6  | 0 |  ASLP-RATE-0    0* = 50HZ
+		======================================================
+		b5  | 1 |  DATA RATE 2       = 50HZ / 20MS
+		------------------------------------------------------
+		b4  | 0 |  DATA RATE 1       = 50HZ / 20MS
+		------------------------------------------------------
+		b3  | 0 |  DATA RATE 0       = 50HZ / 20MS
+		======================================================
+		b2  | 0 |  ------------
+		======================================================
+		b1  | 0 |  F_READ (FAST READ)  0* NORMAL / 1 FAST READ
+		======================================================
+		b0  | 0 |  ACTIVE              0 STAND BY / 1 ACTIVE
+		======================================================
+		//////////////////////////////////////////////////////
+		+==================================+
+		| ASLP1 | ASLP0 |    FREQUENCY HZ  |
+		+=======|=======|==================+
+		|   0   |   0   |       50Hz       |
+		|   0   |   1   |      12.5Hz      |
+		|   1   |   0   |       6.5Hz      |
+		|   1   |   1   |       1.56Hz     |
+		+==================================+
+		//////////////////////////////////////////////////////
+		+==================================+============+
+		|  DR2  |  DR1  |  DR0  | ODR(HZ)  | PERIOD(MS) |
+		+=======|=======|=======|==========|============+
+		|   0   |   0   |   0   |   800    |    1.25    |
+		|   0   |   0   |   1   |   400    |    2.50    |
+		|   0   |   1   |   0   |   200    |    5       |
+		|   0   |   1   |   1   |   100    |    10      |
+		|   1   |   0   |   0   |   50     |    20      | *
+		|   1   |   0   |   1   |   12.5   |    80      |
+		|   1   |   1   |   0   |   6.25   |    160     |
+		|   1   |   1   |   1   |   1.56   |    640     |
+		+===============================================+
+		//////////////////////////////////////////////////////		
+		*/
+				
+
 		// Retrieve from EEPROM
 		
-			#ifdef DEBUGI2C
-			Serial.println(F(">Start I2C"));
-			#endif	
-		//I2C_SEND(CTRL_REG1_ ,0x00); // standby to be able to configure OLD... CHANGED TO
+
+
 		I2C_MMA_standby();
+		
+					#ifdef DEBUGI2C
+					Serial.println(F(">I2C_MMA_standby();"));
+					#endif
+		
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		I2C_SEND(CTRL_REG1_ , OUTDATARANGE_STANDBY ); // Output data rate at Hz, no auto wake, no auto scale adjust, no fast read mode, Active
+		/* B00100000 (stand by)  / B00100001 (ACTIVE)
+		//////////////////////////////////////////////////////
+		/// CTRL_REG1 (0x2A)
+		======================================================
+		b7  | 0 |  ASLP-RATE-1    0* = 50HZ
+		------------------------------------------------------
+		b6  | 0 |  ASLP-RATE-0    0* = 50HZ
+		======================================================
+		b5  | 1 |  DATA RATE 2       = 50HZ / 20MS
+		------------------------------------------------------
+		b4  | 0 |  DATA RATE 1       = 50HZ / 20MS
+		------------------------------------------------------
+		b3  | 0 |  DATA RATE 0       = 50HZ / 20MS
+		======================================================
+		b2  | 0 |  ------------
+		======================================================
+		b1  | 0 |  F_READ (FAST READ)  0* NORMAL / 1 FAST READ
+		======================================================
+		b0  | 0 |  ACTIVE              0 STAND BY / 1 ACTIVE
+		======================================================
+		//////////////////////////////////////////////////////
+		+==================================+
+		| ASLP1 | ASLP0 |    FREQUENCY HZ  |
+		+=======|=======|==================+
+		|   0   |   0   |       50Hz       |
+		|   0   |   1   |      12.5Hz      |
+		|   1   |   0   |       6.5Hz      |
+		|   1   |   1   |       1.56Hz     |
+		+==================================+
+		//////////////////////////////////////////////////////
+		+==================================+============+
+		|  DR2  |  DR1  |  DR0  | ODR(HZ)  | PERIOD(MS) |
+		+=======|=======|=======|==========|============+
+		|   0   |   0   |   0   |   800    |    1.25    |
+		|   0   |   0   |   1   |   400    |    2.50    |
+		|   0   |   1   |   0   |   200    |    5       |
+		|   0   |   1   |   1   |   100    |    10      |
+		|   1   |   0   |   0   |   50     |    20      | *
+		|   1   |   0   |   1   |   12.5   |    80      |
+		|   1   |   1   |   0   |   6.25   |    160     |
+		|   1   |   1   |   1   |   1.56   |    640     |
+		+===============================================+
+		//////////////////////////////////////////////////////		
+		*/
+		
+		
+		
+		
+		
 		I2C_SEND(XYZ_DATA_CFG_ ,GRANGE); // G full range mode
-		//I2C_SEND(CTRL_REG1_ ,OUTDATARANGE); // Output data rate at Hz, no auto wake, no auto scale adjust, no fast read mode, Active
+		/*
+		//////////////////////////////////////////////////////////////////////
+		/// XYZ_DATA_CFG (0x0E)
+		----------------------------------------------------------------------
+		b7  | 0 |  ------------
+		----------------------------------------------------------------------
+		b6  | 0 |  ------------
+		----------------------------------------------------------------------
+		b5  | 0 |  ------------
+		----------------------------------------------------------------------
+		b4  | 0 |  OUTPUT DATA HIGH-PASS FILTER | 0* NORMAL / 1 HPF
+		----------------------------------------------------------------------
+		b3  | 0 |  ------------
+		----------------------------------------------------------------------
+		b2  | 0 |  ------------
+		----------------------------------------------------------------------
+		b1  | 0 |  FULL SCALE RANGE 1
+		----------------------------------------------------------------------
+		b0  | 0 |  FULL SCALE RANGE 0
+		----------------------------------------------------------------------
+		//////////////////////////////////////////////////////////////////////
+		+==================================+
+		|  FS1  |  FS0  | FULL SCALE RANGE |
+		+=======|=======|==================+  
+		|   0   |   0   |      +/-2G       |
+		|   0   |   1   |      +/-4G       |
+		|   1   |   0   |      +/-8G       |*
+		|   1   |   1   |     RESERVED     |
+		+==================================+   
+		*/
+		
+		#ifdef DEBUGI2C
+		Serial.println(F(">I2C_SEND(XYZ_DATA_CFG_ ,GRANGE);"));
+		#endif
+		
 
-		// Enable interrupts - Open-drain output
-		// Pulse function interrupt can wake-up system
-		// Orientation interrupt can wake-up system
-		// Free-fall/motion function interrupt can wake-up system
 
-		I2C_SEND(CTRL_REG3_ ,0x39); 
 
-				#ifdef DEBUGI2C
-				Serial.println(F(">CTRL_REG3_ ,0x39"));
-				#endif
-						  
-		// Enable Pulse detection Interrupt
-		// Enable Orientation Interrupt
-		// Enable Free-fall/motion Interrupt
-		I2C_SEND(CTRL_REG4_ ,0); 
-		  
-		// All interrupt sources hooked to INT2 pin
-		I2C_SEND(CTRL_REG5_ ,1);  // SET INTERRUPT 1
+		I2C_SEND(CTRL_REG2_, B00011011); //
+		/* 
+		//////////////////////////////////////////////////////
+		/// CTRL_REG2 (0x2B)
+		======================================================
+		b7  | 0 |  Self-Test 
+		======================================================
+		b6  | 0 |  Software Reset
+		======================================================
+		b5  | 0 |  ------------
+		======================================================
+		b4  | 1 |  SMODS1 SLEEP mode power scheme selection
+		------------------------------------------------------
+		b3  | 1 |  SMODS0 SLEEP mode power scheme selection
+		======================================================
+		b2  | 0 |  SLPE / Auto-SLEEP
+		======================================================
+		b1  | 1 |  MODS1 ACTIVE mode power scheme selection
+		------------------------------------------------------
+		b0  | 1 |  MODS0 ACTIVE mode power scheme selection
+		======================================================
+		//////////////////////////////////////////////////////
+		+===========================================+
+		| (S)MODS1 | (S)MODS1 |      POWER MODE     |
+		+==========|==========|=====================+
+		|     0    |     0    | Normal              |
+		|     0    |     1    | Low Noise Low Power |
+		|     1    |     0    | High Resolution     |
+		|     1    |     1    | Low Power           |
+		+===========================================+
+		//////////////////////////////////////////////////////	
+		*/
 
-		// Enter active mode
-		I2C_MMA_Active(); 
-				#ifdef DEBUGI2C
-				Serial.println(F(">I2C_MMA_Active();"));
-				#endif
+
+
+
+		I2C_SEND(CTRL_REG3_ ,B00111000);
+		/* 
+		//////////////////////////////////////////////////////
+		/// CTRL_REG3 (0x2C)
+		=======================================================================
+		b7  | 0 |  FIFO GATE / 0 = BYPASSED / 1 = ENABLED
+		=======================================================================
+		b6  | 0 |  WAKE_TRANS / Transient Wakeup / 0 = Bypassed / 1 = Enabled 
+		=======================================================================
+		b5  | 1 |  WAKE_LNDPRT / LNDPRT Wakeup  / 0 = Bypassed / 1 = Enabled
+		=======================================================================
+		b4  | 1 |  WAKE_PULSE / TAP Wakeup / 0 = Bypassed / 1 = Enabled
+		=======================================================================
+		b3  | 1 |  WAKE_FF / Free Fall Wakeup / 0 = Bypassed / 1 = Enabled
+		=======================================================================
+		b2  | 0 |  ------------
+		=======================================================================
+		b1  | 0 |  IPOL / Interrupt Polarity / 0 = Active low / 1 = Active High
+		=======================================================================
+		b0  | 0 |  PP_OD / Push-Pull/Open-Drain on Interrupt / 0* = Push-Pull / 1 = Open Drain
+		=======================================================================
+		//////////////////////////////////////////////////////		
+		*/
+		
+				
+		 
+		I2C_SEND(CTRL_REG4_ ,0x00);  
+		/* 
+		//////////////////////////////////////////////////////
+		/// CTRL_REG3 (0x2C)
+		=======================================================================
+		b7  | 0 |  FIFO GATE / 0 = BYPASSED / 1 = ENABLED
+		=======================================================================
+		b6  | 0 |  WAKE_TRANS / Transient Wakeup / 0 = Bypassed / 1 = Enabled 
+		=======================================================================
+		b5  | 1 |  WAKE_LNDPRT / LNDPRT Wakeup  / 0 = Bypassed / 1 = Enabled
+		=======================================================================
+		b4  | 1 |  WAKE_PULSE / TAP Wakeup / 0 = Bypassed / 1 = Enabled
+		=======================================================================
+		b3  | 1 |  WAKE_FF / Free Fall Wakeup / 0 = Bypassed / 1 = Enabled
+		=======================================================================
+		b2  | 0 |  ------------
+		=======================================================================
+		b1  | 0 |  IPOL / Interrupt Polarity / 0 = Active low / 1 = Active High
+		=======================================================================
+		b0  | 0 |  PP_OD / Push-Pull/Open-Drain on Interrupt / 0* = Push-Pull / 1 = Open Drain
+		=======================================================================
+		//////////////////////////////////////////////////////		
+		*/
+		
+
+
+        // Enter active mode
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		I2C_SEND(CTRL_REG1_ , OUTDATARANGE_ACTIVE ); // Output data rate at Hz, no auto wake, no auto scale adjust, no fast read mode, Active
+		/* B00100000 (stand by)  / B00100001 (ACTIVE)
+		//////////////////////////////////////////////////////
+		/// CTRL_REG1 (0x2A)
+		======================================================
+		b7  | 0 |  ASLP-RATE-1    0* = 50HZ
+		------------------------------------------------------
+		b6  | 0 |  ASLP-RATE-0    0* = 50HZ
+		======================================================
+		b5  | 1 |  DATA RATE 2       = 50HZ / 20MS
+		------------------------------------------------------
+		b4  | 0 |  DATA RATE 1       = 50HZ / 20MS
+		------------------------------------------------------
+		b3  | 0 |  DATA RATE 0       = 50HZ / 20MS
+		======================================================
+		b2  | 0 |  ------------
+		======================================================
+		b1  | 0 |  F_READ (FAST READ)  0* NORMAL / 1 FAST READ
+		======================================================
+		b0  | 0 |  ACTIVE              0 STAND BY / 1 ACTIVE
+		======================================================
+		//////////////////////////////////////////////////////
+		+==================================+
+		| ASLP1 | ASLP0 |    FREQUENCY HZ  |
+		+=======|=======|==================+
+		|   0   |   0   |       50Hz       |
+		|   0   |   1   |      12.5Hz      |
+		|   1   |   0   |       6.5Hz      |
+		|   1   |   1   |       1.56Hz     |
+		+==================================+
+		//////////////////////////////////////////////////////
+		+==================================+============+
+		|  DR2  |  DR1  |  DR0  | ODR(HZ)  | PERIOD(MS) |
+		+=======|=======|=======|==========|============+
+		|   0   |   0   |   0   |   800    |    1.25    |
+		|   0   |   0   |   1   |   400    |    2.50    |
+		|   0   |   1   |   0   |   200    |    5       |
+		|   0   |   1   |   1   |   100    |    10      |
+		|   1   |   0   |   0   |   50     |    20      | *
+		|   1   |   0   |   1   |   12.5   |    80      |
+		|   1   |   1   |   0   |   6.25   |    160     |
+		|   1   |   1   |   1   |   1.56   |    640     |
+		+===============================================+
+		//////////////////////////////////////////////////////		
+		*/
+		TWADC_endTransmission();
+		
+		#ifdef DEBUGI2C
+		Serial.println(F("> TWADC_endTransmission();"));
+		#endif
 	#endif
 	
+	Serial.print(F("> i2C_ADDRESS: 0x"));	Serial.print(MMA_ADDRESS, HEX);
 	
-	
-	Serial.print(F("> i2C_ADDRESS: "));	Serial.print(MMA_ADDRESS, HEX);
-	Serial.print(F("  / ID: MMA8652 "));
 
 	#if defined(OSMONETRUE)
-		Serial.print(F("N/A "));
 		Serial.print(F(" / OSMv1"));
-		Serial.println(F(" / MMA7660 - v1"));
+		Serial.println(F(" / MMA7660 - OSMv1"));
 	#else
+    	TWADC_requestFrom(DEVICEIDADDRESS, 0x0D);
+	    byte ByteReturned = TWADC_read();
+		Serial.print(F("  / ID: 0x"));
+		Serial.print(ByteReturned, HEX);
+		Serial.print(F(" / OSM"));
+		
+		I2CADC_SCL_H_OUTPUT();
+		int ADCresult = analogRead(SCL_PIN);
+		
+		if (ADCresult > 568)
+		{
+		  Serial.println(F("v2.0"));	
+		}
+		else
+		{
+  		  Serial.println(F("v2.1"));
+		}
 
-		//I2C_READ_REG(0x0D);
-		//Serial.print(BYTE_PULLED, HEX);
-		Serial.println(F(" / OSM2"));
-	
 	#endif
 	
 	
 }// DIOV ACCEL_INIT
 
 
-//------------------------------------------------------------------
-
-
-void I2C_SEND(unsigned char REG_ADDRESS, unsigned  char DATA)  //SEND data to MMA
-{// VOID I2C_SEND
-	Wire.beginTransmission(MMA_ADDRESS);
-	Wire.write(REG_ADDRESS);
-	Wire.write(DATA);
-	Wire.endTransmission();
-	delay(1);
-}// DIOV I2C_SEND
-
 
 //------------------------------------------------------------------
-
-
-void I2C_ACC_GET_XYZ(int *xAcc,int *yAcc,int *zAcc) //READ number data from i2c slave ctrl-reg register and return the result in a vector
-{// VOID I2C_ACC_GET_XYZ
-	
-	   //+++++++++++++++++++++++++++++++++++++++++++++++
-		#if defined(OSMONETRUE)
-			Wire.beginTransmission(0x4C);//This is the I2C address for MMA7660
-			Wire.write(0x00);  // register to read
-			Wire.endTransmission();
-			Wire.requestFrom(0x4C, 3); // read a byte
-			
-			if(Wire.available()){
-				*yAcc=Wire.read();
-				*xAcc=Wire.read();
-				*zAcc=Wire.read();
-				
-			}
-			
-			*xAcc = MMA_Nar[*xAcc];
-			*yAcc = MMA_Par[*yAcc];
-			*zAcc = MMA_Par[*zAcc];
-		
-		
-		//+++++++++++++++++++++++++++++++++++++++++++++++
-		
-		#else // OSMv2
-		
-		//+++++++++++++++++++++++++++++++++++++++++++++++
-		
-			byte REG_ADDRESS[7];
-			int accel[4];
-			int i=0;
-			Wire.beginTransmission(MMA_ADDRESS); //=ST + (Device address+W(0)) + wait for ACK
-			Wire.write(0);  // store the register to read in the buffer of the wire library
-			Wire.endTransmission();
-			Wire.requestFrom(MMA_ADDRESS,7); // read a number of byte and store them in wire.read (note: by nature, this is called an "auto-increment register address")
-			for(i=0; i<7; i++) // 7 because on datasheet p.19 if FREAD=0, on auto-increment, the address is shifted
-	
-			/*
-			// according to the datasheet, because it's shifted, outZlsb are in address 0x00
-			// so we start reading from 0x00, forget the 0x01 which is now "status" and make the adaptation by ourselves
-			//this gives:
-			//0 = status
-			//1= X_MSB
-			//2= X_LSB
-			//3= Y_MSB
-			//4= Y_LSB
-			//5= Z_MSB
-			//6= Z_LSB
-			*/
-	
-			{// FOR I
-			REG_ADDRESS[i]=Wire.read(); //each time you read the write.read it gives you the next byte stored. The counter is reset on requestForm
-			}// ROF I
-
-			// MMA8653FC gives the answer on 10bits. 8bits are on _MSB, and 2 are on _LSB
-			// this part is used to concatenate both, and then put a sign on it (the most significant bit is giving the sign)
-			// the explanations are on p.14 of the 'application notes' given by freescale.
-			
-			for (i=1;i<7;i=i+2)
-			{// FOR BYTE
-			accel[0] = (REG_ADDRESS[i+1]|((int)REG_ADDRESS[i]<<8))>>6; // X
-			if (accel[0]>0x01FF) {accel[1]=(((~accel[0])+1)-0xFC00);} // note: with signed int, this code is optional
-			else {accel[1]=accel[0];} // note: with signed int, this code is optional
-			switch(i)
-				{// SWITCH
-					
-					case 1: *xAcc=accel[1];
-					break;
-					case 3: *yAcc=accel[1];
-					break;
-					case 5: *zAcc=accel[1];
-					break;
-										
-				}// HCTIWS
-		
-			}// ROF BYTE
-	
-		#endif
-		
-		//+++++++++++++++++++++++++++++++++++++++++++++++
-
-}// DIOV I2C_ACC_GET_XYZ
-
-//------------------------------------------------------------------
-
-
-
-
-
-//------------------------------------------------------------------
-
-
-void I2C_READ_REG(int ctrlreg_address) //READ number data from i2c slave ctrl-reg register and return the result in a vector
-{
-	Wire.beginTransmission(MMA_ADDRESS); //=ST + (Device address+W(0)) + wait for ACK
-	Wire.write(ctrlreg_address);  // register to read
-	
-	#if defined(OSMONETRUE)
-	Wire.endTransmission();
-	#else
-	Wire.endTransmission(0);
-	#endif
-	
-	Wire.requestFrom(MMA_ADDRESS,1); // read a number of byte and store them in write received
-	if(Wire.available())
-	{
-		BYTE_PULLED=Wire.read();
-	}	
-}
-
-////------------------------------------------------------------------
-//
-    //uint8_t I2C_readByte(uint8_t ctrlreg_address)
-    //{
-	    //uint8_t BYTE_PULLED; // `data` will store the register data
-	    //Wire.beginTransmission(MMA_ADDRESS);         // Initialize the Tx buffer
-	    //Wire.write(ctrlreg_address);	                 // Put slave register address in Tx buffer
-	    //Wire.endTransmission(false);             // Send the Tx buffer, but send a restart to keep connection alive
-		//Wire.requestFrom(MMA_ADDRESS,1);  // Read one uint8_t from slave register address
-	    //while(!Wire.available());
-		//BYTE_PULLED = Wire.read();                      // Fill Rx buffer with result
-	    //return BYTE_PULLED;                             // Return data read from slave register
-    //}
-		//
-////------------------------------------------------------------------
-//
-
-
-//------------------------------------------------------------------
-
-uint8_t I2C_readByte(uint8_t ctrlreg_address)
-{
-	uint8_t BYTE_PULLED; // `data` will store the register data
-	Wire.beginTransmission(MMA_ADDRESS);         // Initialize the Tx buffer
-	Wire.write(ctrlreg_address);	                 // Put slave register address in Tx buffer
-	Wire.endTransmission(false);             // Send the Tx buffer, but send a restart to keep connection alive
-	Wire.requestFrom(MMA_ADDRESS,1);  // Read one uint8_t from slave register address
-	delay(1); // added on 2.5.63
-		if(Wire.available())
-		{
-			BYTE_PULLED = Wire.read();  
-			delay(1); // changed back
-		}
-	return BYTE_PULLED;                             // Return data read from slave register
-}
-
-//------------------------------------------------------------------
-
-
-
-
-
-uint8_t I2C_read_buffer(uint8_t address, uint8_t *buffer, uint8_t length)
-{
-	uint8_t i;
-	
-	Wire.beginTransmission(MMA8652_CTRL_ID_DEFAULT);
-	Wire.write(address);
-	Wire.endTransmission(false);
-	
-	Wire.requestFrom((int)MMA8652_CTRL_ID_DEFAULT, (int)length);
-
-	for(i=0 ; i<length ; i++)
-	{
-		while(!Wire.available());
-		buffer[i] = Wire.read();
-	}
-	
-	return i;
-}
-
-
-
-//------------------------------------------------------------------
-
-//int I2C_READ_865_CHECK(void) //READ MMA865X to be used at the top
-//{
-	//
-	//Wire.beginTransmission(0x1D); //=ST + (Device address+W(0)) + wait for ACK
-//Serial.println(F("> beginTransmission(0x1D)"));
-	//Wire.write(0x0D);  // register to read Device ID
-//Serial.println(F("write(0x0D)"));
-		//
-		//#if defined(OSMONETRUE)
-		//{
-			//Wire.endTransmission();
-			//Serial.println(F("endTransmission()"));
-		//}
-		//#else
-		//{
-			//Wire.endTransmission(0);
-			//Serial.println(F("endTransmission(0)"));
-			//Wire.requestFrom(0x1D,1); // read a number of byte and store them in write received
-			//Serial.println(F("requestFrom(0x1D,1)"));
-			//while (!Wire.available());
-			//Serial.println(F("out of !Wire.available()"));
-			//delay(10);
-			//if(Wire.available())
-			//{
-				//BYTE_PULLED=Wire.read();
-				//Serial.println(F("BYTE_PULLED=Wire.read();"));
-			//}
-		//}
-		//#endif
-//
-//
-	//return BYTE_PULLED;
-//}
-
-//------------------------------------------------------------------
-
-
-
-
-
-
-void I2C_MMA_DUMP(unsigned char TheseRegisters ) //READ number data from i2c slave ctrl-reg register and return the result in a vector
-{
-	////unsigned char REG_ADDRESS;
-	//Wire.beginTransmission(MMA_ADDRESS); //=ST + (Device address+W(0)) + wait for ACK
-	//Wire.write(0);  // register to read
-	//if (!OSMONE){ Wire.endTransmission(0);} // Send the Tx buffer, but send a restart to keep connection alive
-	//else{ Wire.endTransmission();}
-	//
-	//Wire.requestFrom(MMA_ADDRESS, TheseRegisters ); // read a number of byte and store them in write received
-//
-	//byte CounterA = 0;
-	//while (CounterA < TheseRegisters)
-	//{
-		//if(Wire.available())
-		//{
-			//SUPER_REG_ADDRESS[CounterA]=Wire.read();
-		//}
-		//CounterA++;
-	//}
-	
-}
-
-
-//------------------------------------------------------------------
-
-
 
 void I2C_MMA_standby()
 {// void I2C_MMA_standby
 	//+++++++++++++++++++++++++++++++++++++++++++++++
 	#if defined(OSMONETRUE)
-		Wire.begin(); delay(1);      //Initiate the Wire library and join the I2C bus as a master
-		I2C_SEND(0x07,0x10);// Setting up StandBy
+	// SHOULD READ THE REGISTER AND CHANGE THE LAST BIT
+	TWADC_begin(); delay(1);      //Initiate the Wire library and join the I2C bus as a master
+	I2C_SEND(0x07,0x10);// Setting up StandBy
 	#else // else if OSM2
-	Wire.begin(); delay(1);
-	I2C_SEND(CTRL_REG1_ ,0x00);
+	// SHOULD READ THE REGISTER AND CHANGE THE LAST BIT
+	TWADC_begin(); delay(1);
+	I2C_SEND(CTRL_REG1_ ,0x00);// stand by
 	#endif
 }// diov I2C_MMA_standby
 
-//--------------------------------------------------------------------------------------------------
+
+//------------------------------------------------------------------
 
 
-// Sets to active mode.
-// Needs to be in this mode to output data
 void I2C_MMA_Active()
 {// void I2C_MMA_Active
 	//+++++++++++++++++++++++++++++++++++++++++++++++
 	#if defined(OSMONETRUE)
-    I2C_SEND(0x07,0x01); //Setting up MODE Active to START measures
+	// SHOULD READ THE REGISTER AND CHANGE THE LAST BIT
+	I2C_SEND(0x07,0x01); //Setting up MODE Active to START measures
 	#else // else if OSM2
-	I2C_SEND(CTRL_REG1_ ,HZ50_ACTIVE);// Output data rate at Hz, no auto wake, no auto scale adjust, no fast read mode, Active
+	// SHOULD READ THE REGISTER AND CHANGE THE LAST BIT
+	I2C_SEND(CTRL_REG1_ ,OUTDATARANGE_ACTIVE);// Output data rate at Hz, no auto wake, no auto scale adjust, no fast read mode, Active
 	#endif
 }// diov I2C_MMA_Active
 
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------
 
-// RESET THE DEVICE
-void I2C_MMA_Reset(void)
+
+void TWADC_MMA_Reset(void)
 {
-	  I2C_MMA_standby();
-	  I2C_SEND(CTRL_REG2_, 0x40); // Reset Mask 0x40
-	  I2C_MMA_Active();
-}
-
-//--------------------------------------------------------------------------------------------------
-
-
-void I2C_MMA_EnableInterrupt(uint8_t Source)
-{
-	  I2C_SEND(CTRL_REG4_, Source);
+	I2C_MMA_standby();
+	I2C_SEND(CTRL_REG2_, 0x40); // Reset Mask 0x40
+	I2C_MMA_Active();
 }
 
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------
 
 
-void I2C_MMA_DisableInterrupt(uint8_t Source)
-{
-	  I2C_SEND(CTRL_REG4_, Source);	
-}
+//void TWADC_MMA865x_Sleep(void)
+//{
+	//// Enter stand-by mode
+	//I2C_MMA_standby();
+	//I2C_SEND(ASLP_COUNT_, 1);
+	//I2C_SEND(CTRL_REG2_, 0x1C);
+	//// Back to active mode
+	//TWADC_MMA_Active();
+//}
 
 
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------
 
 
-void I2C_MMA_enableFreeFallInterrupt(uint8_t sensibility)
-{
-  //// Enter stand-by mode
-  I2C_MMA_standby();
-  I2C_MMA_EnableInterrupt(0x04); // SRC_FF_MT_MASK 
-  //// Enable single pulse detection on each axis
-  I2C_SEND(FF_MT_CFG_, 0xF8); // Motion detection - XYZ events enabled
-  I2C_SEND(FF_MT_THS_, sensibility);
-  //// Back to active mode
-  I2C_MMA_Active();
-}
 
 
-//--------------------------------------------------------------------------------------------------
-
-void I2C_MMA_disableFreeFallInterrupt(void)
-{
-
-  // Enter stand-by mode
-  I2C_MMA_standby();
-  delay(1);
-  I2C_MMA_DisableInterrupt(0x00); // SRC_FF_MT_MASK 
-  delay(1);
-  // Disable Portrait/Ladscape orientation detection
-  I2C_SEND(FF_MT_CFG_, 0);
-  // Back to active mode
-  I2C_MMA_Active();
-}
-
-//--------------------------------------------------------------------------------------------------
+int TWADC_ACC_GET_VAL(byte AccelToPull) //READ number data from i2c slave ctrl-reg register and return the result in a vector
+{// VOID I2C_ACC_GET_XYZ
 
 
-void I2C_MMA_Sleep(void)
-{
-	  // Enter stand-by mode
-	  I2C_MMA_standby();
-	  I2C_SEND(ASLP_COUNT_, 1);
-	  I2C_SEND(CTRL_REG2_, 0x1C);
-	  // Back to active mode
-	  I2C_MMA_Active();
-}
-
-
-//--------------------------------------------------------------------------------------------------
-
-void I2C_MMA_readXYZ(void)
-{
-	uint8_t buf[7];
-	uint16_t twoCompl;
+	////+++++++++++++++++++++++++++++++++++++++++++++++
+	#if defined(OSMONETRUE)
 	
-	I2C_read_buffer(MMA8652_STATUS_00, buf, 7);
+	int xyzAcc[3];
+	
+	Wire.beginTransmission(0x4C);//This is the I2C address for MMA7660
+	Wire.write(0x00);  // register to read
+	Wire.endTransmission();
+	Wire.requestFrom(0x4C, 3); // read a byte
+	
+	if(Wire.available())
+	{
+		xyzAcc[0]=Wire.read();
+		xyzAcc[1]=Wire.read();
+		xyzAcc[2]=Wire.read();
+		
+	}
+	
+	
+	if (AccelToPull == 0) // x axis
+	{
+		xyzAcc[0] = MMA_Nar[xyzAcc[0]];
+	}
+	
+	if (AccelToPull == 1) // y axis (yaw)
+	{
+		xyzAcc[1] = MMA_Par[xyzAcc[1]];
+	}
+	
+	if (AccelToPull == 2) // z axis
+	{
+		xyzAcc[2] = MMA_Par[xyzAcc[2]];
+	}
+	
+	return xyzAcc[AccelToPull];
 
-	twoCompl = ((buf[1] << 8) | buf[2]) >> 4;
-	if (buf[1] > 0x7F)
-	xAccT = (~twoCompl + 1) * (-1);
-	else
-	xAccT = twoCompl;
+	////+++++++++++++++++++++++++++++++++++++++++++++++
+	
+	#else // OSMv2
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++
 
-	twoCompl = ((buf[3] << 8) | buf[4]) >> 4;
-	if (buf[3] > 0x7F)
-	yAccT = (~twoCompl + 1) * (-1);
-	else
-	yAccT = twoCompl;
+    int Acc;
+	byte FIRSTADDRESS;
+	//byte SECONDADDRESS;
+	//byte MyResutl_high;
+	//byte MyResutl_low;
+	
+	if (AccelToPull == 0) // x axis
+	{
+		FIRSTADDRESS   = 0x01;
+		//SECONDADDRESS = 0x02;
+	}
+	
+	if (AccelToPull == 1) // y axis (yaw)
+	{
+		FIRSTADDRESS   = 0x03;
+		//SECONDADDRESS = 0x04;
+	}
+	
+	if (AccelToPull == 2) // z axis
+	{
+		FIRSTADDRESS   = 0x05;
+		//SECONDADDRESS = 0x06;
+	}
+	
+	/////////////////////////////////////////////////////////////////////
+	
+	ADCSRA = ADCRASAVE;// recover ADCSRA VALUE
+	TWADC_requestFrom(MMA_ADDRESS,FIRSTADDRESS);
+	Acc = TWADC_read();
+	TWADC_endTransmission();
+	ADCRASAVE = ADCSRA;// save ADCSRA VALUE
+	ADCSRA = 0; // SET TO ZERO
 
-	twoCompl = ((buf[5] << 8) | buf[6]) >> 4;
-	if (buf[5] > 0x7F)
-	zAccT = (~twoCompl + 1) * (-1);
-	else
-	zAccT = twoCompl;
-}
+	/////////////////////////////////////////////////////////////////////
 
-//--------------------------------------------------------------------------------------------------	
+	int accel[4];
+	accel[0] = (Acc|((int)Acc<<8))>>6; // X
+	if (accel[0]>0x01FF) {accel[1]=(((~accel[0])+1)-0xFC00);} // note: with signed int, this code is optional
+	else {accel[1]=accel[0];} // note: with signed int, this code is optional
+	
+	return accel[1];
+
+	#endif
+	
+	//+++++++++++++++++++++++++++++++++++++++++++++++
+
+}// DIOV I2C_ACC_GET_XYZ
+
+
+//------------------------------------------------------------------
+

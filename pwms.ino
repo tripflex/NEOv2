@@ -19,6 +19,19 @@ void BLINKPWM(byte red, byte green, byte blue, int time,byte BlinkTimes)
 }// diov osmPWM
 
 
+void BLINK(byte red, byte green, byte blue, int time,int BlinkTimes)
+{ // void osmPWM
+	//time = time * 14;
+	while (BlinkTimes > 0 && ToBorNotToB)
+	{ // while time
+		osmPWM(red,green,blue,time);
+		osmPWM(0,0,0,time);
+		BlinkTimes--;
+	}// elihw time
+}// diov osmPWM
+
+
+
 // this is the light engine
 void osmPWM(byte red, byte green, byte blue, int time)
 { // void osmPWM
@@ -125,7 +138,8 @@ void osmPWMSCCxyz(byte red, byte green, byte blue, byte shade, int time)
 		analogWrite(5, blue); // blue
 		analogWrite(6, green); // green
 		analogWrite(9, red); // red
-		mmaSensor(PMMAselect, PmmAxis, PAccelCounter, PAccelSensitivity);
+		mmaSensor(PMMAselect, PmmAxis, PAccelCounterDebouncer, PAccelSensitivity);
+		AnalogBlank();// added
 		if (shade>0)
 		{// if shade > 0
 			ShaderFactor = 4;

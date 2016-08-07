@@ -67,7 +67,6 @@ Many things happened in between these versions
 
 * 2.5.2bd  - Beta Developer 
            - FIXING THE SLEEP MODE AFFECTING THE ACCELEROMETER RE-INIATILIZATON 
-		   - OSM1 SUPPORT: UNCOMMENT LINE 88 FOR OSM SUPPORT (FIRST LINE OF THE PROGRAM)
 		   
 * 2.5.3bd  - Added missing accelerometer sensitivity (Debug)
            - FIXING THE SLEEP MODE 	
@@ -86,11 +85,18 @@ Many things happened in between these versions
 * 2.5.63  - I2C back delay CLEANUP
           - CTRL_REG1 CLEANUP
 		  - Changed modes
-		  
-* 2.5.7br  - (2.5.63 release)	
-           - Rule 11
+		   
+* 2.5.75   - Added Battery Power ADC levels
+		   - ADC_I2C
+		   - Added TWADC.ino
+		   - Changed ACC_INIT.ino
+		   - Leaving comments on big changes for education purposes only.
 
- 		        
+* 2.5.76	- Leaving comments on big changes for education purposes only.		 
+            - 2.5.8 Beta release
+			
+- 2.5.8     - Beta release
+			       
 **********************************************************************************************/
 
 
@@ -99,15 +105,12 @@ Many things happened in between these versions
 /// THE PROGRAM STARTS HERE ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
-// OSM1 : UNCOMMENT THE NEXT LINE (REMOVING THE "//") FOR OSM 1 
-// #define OSMONETRUE 
 
-
-
+#define DEVICEIDADDRESS 0x1D  // MMA865X Device Address
 
 //#define DEBUGI2C
-#define DEBUGRUN 
-#define PRINTVERSION Serial.println(F("> NEO * 2.5.7br - Rule 11")); 
+#define DEBUGRUN
+#define PRINTVERSION Serial.println(F("> NEO * 2.5.8br - OSM2POINT1 Compatible")); 
 
 //#define SLIDERPRO
 //#define EEPROM_DEBUG
@@ -121,6 +124,20 @@ Many things happened in between these versions
 #define LDO      A3  // LDO ENABLE
 #define DEBUG    7   // DEBUG PIN
 
+
+/// DEFINITIOS FOR MASTER BUILDER
+#define ACC_NO     0
+#define ACC_TILT   1
+#define ACC_SHAKE  2
+#define ACC_SWITCH 3
+
+#define ACC_X  0
+#define ACC_Y  1
+#define ACC_Z  2
+
+
+
+
 #include "mma8652_regs.h"
 
 #include "LowPower.h"    // LOW POWER SLEEP (OPTION A)
@@ -132,17 +149,18 @@ Many things happened in between these versions
 #include "_CSTM_COLOR.h"
 #include "_COLOR_MODES.h"
 
-
+int ADCRASAVE;
 
 
 //// SETTING VARIABLES NEO
 
+volatile boolean BATT_CHECK = 0;
 volatile boolean SLIDERPRO_FLAG = 0;
 volatile byte ACCEL_MODE = 1;
 volatile boolean ONEMODE_FLAG = 0; 
 volatile boolean ClearToGo;
 volatile boolean ONEMODE = 0;
-volatile boolean MODERESET_FLAG = 0;             // RESET FLAG
+volatile boolean MODERESET_FLAG = 0;            
 volatile boolean AllYourBaseAreBelongToUs = 0;   
 volatile byte CurrentOffCounter = 0;             
 volatile int long TTtime;
@@ -162,8 +180,8 @@ volatile byte SenseY;
 volatile int Sensitivity;
 volatile byte PMMAselect;
 volatile byte PmmAxis;
-volatile int PAccelCounter;
-volatile byte PAccelSensitivity;
+volatile int PAccelCounterDebouncer;
+volatile int PAccelSensitivity;
 volatile int ColorTime[2];
 volatile int BlankTime[2];
 volatile byte PrimeType[2];
@@ -312,34 +330,27 @@ volatile byte CurrentUserMode;
 volatile byte BPM_Selector;
 
 
-
-//////////////// EXTRA ADDED FOR 865X
-int AXIS_X_STATUS ;
-int AXIS_Y_STATUS ;
-int AXIS_Z_STATUS ;
-int ID_STATUS;
 volatile bool OSMONE = 0;
 unsigned char GRANGE;
-unsigned char OUTDATARANGE;
+unsigned char OUTDATARANGE_ACTIVE;
+unsigned char OUTDATARANGE_STANDBY;
 volatile int ReadReg;
-uint8_t BYTE_PULLED; // was int
-byte REG_TO_READ;
-
-byte RawByte;
-byte SUPER_REG_ADDRESS[49];
 int DEVICEID;
 int MMA_ADDRESS;
 
 
-#define readIntSource()  I2C_readByte(MMA8652_INT_SOURCE)
 
 
 int Debouncer;
 
+
+#define SCL_PIN A5
+#define SDA_PIN A4
+
+
 //----------------------------------------------------------------------
 
-
-
+int ADCresult;
 
 
 
@@ -385,7 +396,7 @@ volatile byte UserBPM[10] =
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// CURRENT VERSION  //// CURRENT VERSION  //// CURRENT VERSION  //// CURRENT VERSION  //// CURRENT VERSION ///
-volatile  byte CurrentVersion = 231;         // CHANGE THIS NUMBER IF YOU WANT TO SAVE A NEW FACTORY DEFAULT  BETWEEN 1 AND 254  <----
+volatile  byte CurrentVersion = 132;         // CHANGE THIS NUMBER IF YOU WANT TO SAVE A NEW FACTORY DEFAULT  BETWEEN 1 AND 254  <----
 //// CURRENT VERSION  //// CURRENT VERSION  //// CURRENT VERSION  //// CURRENT VERSION  //// CURRENT VERSION ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -396,10 +407,14 @@ void setup()
 { // void setup
 	
 	
+
+	digitalWrite(LDO, HIGH); // Power LDO ON
 	delay(50);
+	
 	boolean WentToSleep = 0;
 	OSMsetup();       // Sets I/O @ setup.ino
 	TimerMax();       // Sets Timers @ setup.ino
+
 	eeCheck();
 	WentToSleep = EEPROM.read(5); // WentToSleep
 	eeCheck();
@@ -407,13 +422,12 @@ void setup()
 	eeCheck();	
 	attachInterrupt(0, pushInterrupt, FALLING); // Interrupt on Push Button (Digital 2)
 
-
 	if (WentToSleep)
 	{
 		LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);//////// DEEP SLEEP
 	}
 	
-	delay(50);
+
 	digitalWrite(LDO, HIGH); // Power LDO ON
 	delay(50);
 	
@@ -429,8 +443,8 @@ void setup()
 	
 	PRINTVERSION ;
 	delay(200);// added for timing
-	
 	ACCEL_INIT();
+	
 	
 	eepromWriteFactory();// Factory Reset (if)
 	eepromLoad();// Load EEPROM to SRAM
@@ -443,11 +457,11 @@ void setup()
 		CurrentUserBundle   = EEPROM.read(2);eeCheck(); // CurrentUserBundle
 		CurrentUserMode     = EEPROM.read(3);eeCheck(); // CurrentUserMode
 					
-		if ((WentToSleep) || (!ONEMODE)) 
+		if ((WentToSleep) || (!ONEMODE))
 		{
 			CurrentUserMode = 1 ;
 			MaxUserModes = UserCmodes[CurrentUserBundle][0];
-	    }
+		}
 				
 		Mode = UserCmodes[CurrentUserBundle][CurrentUserMode];
 		
@@ -460,37 +474,45 @@ void setup()
 	DumpSRAM();   // FOR DEBUG
 	#endif
 	
-    interrupts();
-	
-
 
 	
+	Serial.print(F("> MODE: "));
+	
+	
+	Serial.println(Mode);
+	
+	
+	interrupts();
+	    
+	ADCRASAVE = ADCSRA;// added OSMv2.1
+	    
+	analogReference(1);// added OSMv2.1
+
 }// diov setup
 
 
 
+boolean SwitchAB = 1;
+boolean OnlyONce = 1;
+boolean GoOn = 1;
 
-
-  boolean SwitchAB = 1;
-  boolean OnlyONce = 1;
-  
-  boolean GoOn = 1;
 
 void loop()
 { // void Loop
 
 
-
 //while (1)
 //{
-//I2C_ACC_GET_XYZ(&xAcc,&yAcc,&zAcc);
-//Serial.print("Acc: ");
-//Serial.print(xAcc);Serial.print("  /  ");
-//Serial.print(yAcc);Serial.print("  /  ");
-//Serial.print(zAcc);Serial.println("  /  ");
-//delay(50);
-//
+//int AccelResultX = TWADC_ACC_GET_VAL(0);
+//int AccelResultY = TWADC_ACC_GET_VAL(1);
+//int AccelResultZ = TWADC_ACC_GET_VAL(2);
+//Serial.print("Result: ");
+//Serial.print(AccelResultX); Serial.print("  /  ");
+//Serial.print(AccelResultY); Serial.print("  /  ");
+//Serial.print(AccelResultZ); Serial.print("  /  ");
+//Serial.println();
 //}
+
 
 
 
@@ -502,32 +524,29 @@ while (Mode == 0 )
 }// elihw 0
 //////    MODE  0      /////////////////////////////////////////////////////////////////////
 
+
     
 //////    MODE     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 JUSTONCE = 1; GLOBALCHANGE = 1;
 while (Mode == 1 && GLOBALCHANGE )// Mode
 { //while mode 
 
-	#if defined(OSMONETRUE) // if OSM ONE
+
 	//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-	osm_MASTER_BUILDER (      2,       2,         30,           80,              1,      5.4,       8.2,       0,    0,    0,        1,       5.4,        8.2,       0,    0,    0     ) ;
-	//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#else 
-	//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-	osm_MASTER_BUILDER (      2,       2,         30,           80,            1,      5.4,       8.2,       0,    0,    0,        1,       5.4,        8.2,       0,    0,    0     ) ; // was 40
-	//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#endif
+	osm_MASTER_BUILDER (   ACC_TILT,  ACC_Z,     30,           200,               1,      5.4,        8.2,      0,    0,    0,         1,       5.4,        8.2,       0,    0,    0     ) ; //
+	//                 (  Acc_Select  Axis  AccelDebounce  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
+
 
 //// Acc_Select:
-//// 0 = No_Accelerometer
-//// 1 = Tilt
-//// 2 = Shake / Freefall Normal Switch
-//// 3 = Switch mode
+//// 0 = ACC_NO    (No_Accelerometer) 
+//// 1 = ACC_TILT  (Tilt)
+//// 2 = ACC_SHAKE (Shake / Freefall Normal Switch)
+//// 3 = ACC_SWITCH (Switch mode)
 ////
 //// Axis: (Available only for Tilt option) 
-//// 0 = X 
-//// 1 = Y
-//// 2 = Z
+//// 0 = ACC_X  
+//// 1 = ACC_Y
+//// 2 = ACC_Z
 ////
 //// AccelCounter: 100 Default (1 to 32000) / Less = more sensitive (Debounce Sensitivity Counter)
 ////
@@ -556,28 +575,20 @@ JUSTONCE = 1; GLOBALCHANGE = 1;
 while (Mode == 2 && GLOBALCHANGE )// Mode
 { //while mode
 	
-
-	#if defined(OSMONETRUE) // if OSM ONE
 		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,               1,      17.3,       17.3,       0,    0,    0,        1,       2,      2,     0,    0,    0     ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#else
-		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,               1,      17.3,       17.3,       0,    0,    0,        1,       2,      2,     0,    0,    0     ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#endif
-	
+		osm_MASTER_BUILDER (   ACC_TILT, ACC_Z,      30,         80,               1,      17.3,       17.3,       0,    0,    0,        1,       15,      5,     0,    0,    0     ) ;
+		//                 (  Acc_Select  Axis  AccelDebounce  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
 
 //// Acc_Select:
-//// 0 = No_Accelerometer
-//// 1 = Tilt
-//// 2 = Shake / Freefall Normal Switch
-//// 3 = Switch mode  
+//// 0 = ACC_NO    (No_Accelerometer) 
+//// 1 = ACC_TILT  (Tilt)
+//// 2 = ACC_SHAKE (Shake / Freefall Normal Switch)
+//// 3 = ACC_SWITCH (Switch mode)
 ////
-//// Axis: (Available only for Tilt option)
-//// 0 = X
-//// 1 = Y
-//// 2 = Z
+//// Axis: (Available only for Tilt option) 
+//// 0 = ACC_X  
+//// 1 = ACC_Y
+//// 2 = ACC_Z
 ////
 //// AccelCounter: 100 Default (1 to 32000) / Less = more sensitive (Debounce Sensitivity Counter)
 ////
@@ -605,27 +616,20 @@ JUSTONCE = 1; GLOBALCHANGE = 1;
 while (Mode == 3 && GLOBALCHANGE )// Mode 
 { //while mode
 
-
-	#if defined(OSMONETRUE) // if OSM ONE
 		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,              5,      2.5,       2,       1,    360,    0,        1,      2.5,       2,       5,    360,    0      ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#else
-		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,              5,      2.5,       2,       1,    360,    0,        1,      2.5,       2,       5,    0,    0   ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#endif
+		osm_MASTER_BUILDER (       2,       2,         30,           50,              5,      2.5,       2,       1,    360,    0,        1,      2.5,       2,       5,    0,    0   ) ;
+		//                 (  Acc_Select  Axis  AccelDebounce  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
 
 //// Acc_Select:
-//// 0 = No_Accelerometer
-//// 1 = Tilt
-//// 2 = Shake / Freefall Normal Switch
-//// 3 = Switch mode  
+//// 0 = ACC_NO    (No_Accelerometer) 
+//// 1 = ACC_TILT  (Tilt)
+//// 2 = ACC_SHAKE (Shake / Freefall Normal Switch)
+//// 3 = ACC_SWITCH (Switch mode)
 ////
-//// Axis: (Available only for Tilt option)
-//// 0 = X
-//// 1 = Y
-//// 2 = Z
+//// Axis: (Available only for Tilt option) 
+//// 0 = ACC_X  
+//// 1 = ACC_Y
+//// 2 = ACC_Z
 ////
 //// AccelCounter: 100 Default (1 to 32000) / Less = more sensitive (Debounce Sensitivity Counter)
 ////
@@ -653,26 +657,21 @@ JUSTONCE = 1; GLOBALCHANGE = 1;
 while (Mode == 4 && GLOBALCHANGE )// Mode
 { //while mode
 	
-	#if defined(OSMONETRUE) // if OSM ONE
 		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,               1,      3.2,       23.2,       0,    0,    0,        1,       3.2,      23.2,     0,    0,    0     ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#else
-		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,               1,      3.2,       23.2,       0,    0,    0,        2,       3.2,      23.2,     0,    0,    0     ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#endif
+		osm_MASTER_BUILDER (       2,       2,         100,           80,               1,      3.2,       23.2,       0,    0,    0,        2,       3.2,      23.2,     0,    0,    0     ) ;
+		//                 (  Acc_Select  Axis  AccelDebounce  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
+
 	
 //// Acc_Select:
-//// 0 = No_Accelerometer
-//// 1 = Tilt
-//// 2 = Shake / Freefall Normal Switch
-//// 3 = Switch mode  
+//// 0 = ACC_NO    (No_Accelerometer) 
+//// 1 = ACC_TILT  (Tilt)
+//// 2 = ACC_SHAKE (Shake / Freefall Normal Switch)
+//// 3 = ACC_SWITCH (Switch mode)
 ////
-//// Axis: (Available only for Tilt option)
-//// 0 = X
-//// 1 = Y
-//// 2 = Z
+//// Axis: (Available only for Tilt option) 
+//// 0 = ACC_X  
+//// 1 = ACC_Y
+//// 2 = ACC_Z
 ////
 //// AccelCounter: 100 Default (1 to 32000) / Less = more sensitive (Debounce Sensitivity Counter)
 ////
@@ -700,27 +699,21 @@ JUSTONCE = 1; GLOBALCHANGE = 1;
 while (Mode == 5 && GLOBALCHANGE )// Mode
 { //while mode
 	
-	#if defined(OSMONETRUE) // if OSM ONE
-		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,             2,      4.2,       18.3,       0,    0,    0,        2,       4.2,       18.3,       0,    0,    0     ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#else
-		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,             2,      4.2,       18.3,       0,    0,    0,        2,       4.2,       18.3,       0,    0,    0     ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#endif
 
+		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
+		osm_MASTER_BUILDER (       2,       2,         100,           80,             2,      4.2,       18.3,       0,    0,    0,        2,       4.2,       18.3,       0,    0,    0     ) ;
+		//                 (  Acc_Select  Axis  AccelDebounce  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
 
 //// Acc_Select:
-//// 0 = No_Accelerometer
-//// 1 = Tilt
-//// 2 = Shake / Freefall Normal Switch
-//// 3 = Switch mode  
+//// 0 = ACC_NO    (No_Accelerometer) 
+//// 1 = ACC_TILT  (Tilt)
+//// 2 = ACC_SHAKE (Shake / Freefall Normal Switch)
+//// 3 = ACC_SWITCH (Switch mode)
 ////
-//// Axis: (Available only for Tilt option)
-//// 0 = X
-//// 1 = Y
-//// 2 = Z
+//// Axis: (Available only for Tilt option) 
+//// 0 = ACC_X  
+//// 1 = ACC_Y
+//// 2 = ACC_Z
 ////
 //// AccelCounter: 100 Default (1 to 32000) / Less = more sensitive (Debounce Sensitivity Counter)
 ////
@@ -749,27 +742,21 @@ JUSTONCE = 1; GLOBALCHANGE = 1;
 while (Mode == 6 && GLOBALCHANGE )// Mode
 { //while mode
 	
-	#if defined(OSMONETRUE) // if OSM ONE
-		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,              1,      4.6,       4.7,       0,    0,    0,        1,       4.6,        4.7,       0,    0,    0     ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#else
 		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
 		osm_MASTER_BUILDER (       2,       2,         30,           80,             1,      4.6,       4.7,       0,    0,    0,        1,       4.6,        4.7,       0,    0,    0     ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#endif
+		//                 (  Acc_Select  Axis  AccelDebounce  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
 
 	
 //// Acc_Select:
-//// 0 = No_Accelerometer
-//// 1 = Tilt
-//// 2 = Shake / Freefall Normal Switch
-//// 3 = Switch mode  
+//// 0 = ACC_NO    (No_Accelerometer) 
+//// 1 = ACC_TILT  (Tilt)
+//// 2 = ACC_SHAKE (Shake / Freefall Normal Switch)
+//// 3 = ACC_SWITCH (Switch mode)
 ////
-//// Axis: (Available only for Tilt option)
-//// 0 = X
-//// 1 = Y
-//// 2 = Z
+//// Axis: (Available only for Tilt option) 
+//// 0 = ACC_X  
+//// 1 = ACC_Y
+//// 2 = ACC_Z
 ////
 //// AccelCounter: 100 Default (1 to 32000) / Less = more sensitive (Debounce Sensitivity Counter)
 ////
@@ -798,27 +785,22 @@ JUSTONCE = 1; GLOBALCHANGE = 1;
 while (Mode == 7 && GLOBALCHANGE )// Mode
 { //while mode
 	
-	#if defined(OSMONETRUE) // if OSM ONE
-		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,              1,      4.6,       8.3,       0,    0,    0,        1,       4.6,        8.3,       0,    0,    0     ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#else
+
 		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
 		osm_MASTER_BUILDER (       2,       2,         30,           80,             1,      4.6,       8.3,       0,    0,    0,        1,       4.6,        8.3,       0,    0,    0     ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#endif
-	
+		//                 (  Acc_Select  Axis  AccelDebounce  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
+
 	
 //// Acc_Select:
-//// 0 = No_Accelerometer
-//// 1 = Tilt
-//// 2 = Shake / Freefall Normal Switch
-//// 3 = Switch mode  
+//// 0 = ACC_NO    (No_Accelerometer) 
+//// 1 = ACC_TILT  (Tilt)
+//// 2 = ACC_SHAKE (Shake / Freefall Normal Switch)
+//// 3 = ACC_SWITCH (Switch mode)
 ////
-//// Axis: (Available only for Tilt option)
-//// 0 = X
-//// 1 = Y
-//// 2 = Z
+//// Axis: (Available only for Tilt option) 
+//// 0 = ACC_X  
+//// 1 = ACC_Y
+//// 2 = ACC_Z
 ////
 //// AccelCounter: 100 Default (1 to 32000) / Less = more sensitive (Debounce Sensitivity Counter)
 ////
@@ -853,27 +835,20 @@ while (Mode == 8 && GLOBALCHANGE )// Mode
 { //while mode
 
 
-	#if defined(OSMONETRUE) // if OSM ONE
-		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
-		osm_MASTER_BUILDER (       2,       2,         30,           80,             1,       2.6,        1.2,     120,    0,    0,        1,       2.6,        1.2,     5,    0,    0     ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#else
 		//                 (//-----------------------ACCEL SETTINGS------------//-----------------PRIME A  SETTINGS------------------//-----------------PRIME B  SETTINGS------------------//)
 		osm_MASTER_BUILDER (       2,       2,         30,           80,            1,       2.6,        1.2,     120,    0,    0,        1,       2.6,        1.2,     5,    0,    0    ) ;
-		//                 (  Acc_Select  Axis  AccelCounter  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
-	#endif
-	
-	
+		//                 (  Acc_Select  Axis  AccelDebounce  MMASensitivity  //  PrimeA  ColorTimeA  BlankTimeA   E1A   E2A   VPA  //  PrimeB  ColorTimeB  BlankTimeB   E1B   E2B   VPB   //) ;
+
 	//// Acc_Select:
-	//// 0 = No_Accelerometer
-	//// 1 = Tilt
-	//// 2 = Shake / Freefall Normal Switch
-	//// 3 = Switch mode  
+	//// 0 = ACC_NO    (No_Accelerometer)
+	//// 1 = ACC_TILT  (Tilt)
+	//// 2 = ACC_SHAKE (Shake / Freefall Normal Switch)
+	//// 3 = ACC_SWITCH (Switch mode)
 	////
 	//// Axis: (Available only for Tilt option)
-	//// 0 = X
-	//// 1 = Y
-	//// 2 = Z
+	//// 0 = ACC_X
+	//// 1 = ACC_Y
+	//// 2 = ACC_Z
 	////
 	//// AccelCounter: 100 Default (1 to 32000) / Less = more sensitive (Debounce Sensitivity Counter)
 	////
@@ -902,7 +877,6 @@ while (Mode == 8 && GLOBALCHANGE )// Mode
 
 
 }// diov Loop
-
 
 
 

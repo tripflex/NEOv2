@@ -86,10 +86,10 @@ void Alpha_Omega(void)// Blank Sleep
 	{// if not ONEMODE
 		delay(30);
 	
-		#if defined(VISUAL)
+
 		Serial.println();
 		Serial.println(F("... wakey wakey!"));
-		#endif
+
 //Serial.println(F("... I WAS HERE!... !ONEMODE"));////// DEBUG
 	
 		//////////////////////////////////////////////////////
@@ -100,24 +100,28 @@ void Alpha_Omega(void)// Blank Sleep
 		//MMA_Active();
 		zAcc = 0;
 		delay(40);
-		//MMA7660.getRaw(&xAcc,&yAcc,&zAcc);
-		I2C_ACC_GET_XYZ(&xAcc,&yAcc,&zAcc);
+
+		zAcc = TWADC_ACC_GET_VAL(2);// z axis
 		
-		Serial.print(F("  Z: "));Serial.println(zAcc);
+		
 		if (zAcc < -1)// check zflip here
 		{
 			Zflipped = 1;
+			Serial.print(F("  Z-Flipped: "));Serial.println(zAcc);
 		}
 		else
 		{
 			Zflipped = 0;
+			Serial.print(F("  Z-Up: "));Serial.println(zAcc);
 		}
 		//////////////////////////////////////////////////////
 
 	}// if not ONEMODE
 
-				Zflip(); // Uncomment for default
+				Zflip(); 
 				NoZflip();
+				
+
 
 	////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////
@@ -185,8 +189,14 @@ void Alpha_Omega(void)// Blank Sleep
 	STATE = 1;
 	Click = 0;
 	Int0count = 0;
-
+	
 	interrupts(); // enable interrupts
+
+	if (BATT_CHECK)
+	{
+		BattBlink();
+		BATT_CHECK = 0;
+	}
 	
 }// Alpha_Omega
 /////////////////////////////////////////////
@@ -277,35 +287,35 @@ void NoZflip(void) // FROM OFF BUTTON UP
 		
 		{// else
 			OgooD = 1;
-			while ((CurrentOffCounter == 0) && (digitalRead (BUTTON) == LOW) ) // BLANK // NOTHING HAPPENS (RESERVED) // @ YETZIRAH
+			while ((CurrentOffCounter == 0) && (digitalRead (BUTTON) == LOW) ) // BLANK  // NOTHING HAPPENS (RESERVED) // @ YETZIRAH
 			{
 				AllYourBaseAreBelongToUs = 0;
 				ClearToGo = 1;
-				BLINKPWM(0,0,0 ,50,2);
-				SLIDERPRO_FLAG = 0;
+				BLINKPWM(0,0,0 ,100,2);
+				BATT_CHECK = 0;
 			}
 					
 			OgooD = 1;
-			while ((CurrentOffCounter == 1) && (digitalRead (BUTTON) == LOW) && (ClearToGo) ) // GREEN  // NOTHING HAPPENS (RESERVED) // @ YETZIRAH
+			while ((CurrentOffCounter == 1) && (digitalRead (BUTTON) == LOW) && (ClearToGo) )  // GREEN // BATTERY CHECK // @ YETZIRAH
 			{
-				BLINKPWM(0,60,0 ,50,2);
-				SLIDERPRO_FLAG = 1;
+				BLINKPWM(0,60,0 ,100,8);BLINKPWM(0,60,0 ,100,8);
+				BATT_CHECK = 1;
 				
 			}
 					
 			OgooD = 1;
 			while ((CurrentOffCounter == 2) && (digitalRead (BUTTON) == LOW) && (ClearToGo) ) // BLANK  // NOTHING HAPPENS (RESERVED) // @ YETZIRAH
 			{
-				BLINKPWM(0,0,0 ,50,2);
-				SLIDERPRO_FLAG = 0;
+				BLINKPWM(0,0,0 ,50,8);BLINKPWM(0,0,0 ,50,8);
+				BATT_CHECK = 0;
 				
 			}
 					
 			OgooD = 1;
 			while ((CurrentOffCounter == 3) && (digitalRead (BUTTON) == LOW) && (ClearToGo) ) // BLANK  // NOTHING HAPPENS (RESERVED)  // @ YETZIRAH
 			{
-				BLINKPWM(0,0,0 ,50,2);
-				SLIDERPRO_FLAG = 0;
+				BLINKPWM(0,0,0 ,50,8);BLINKPWM(0,0,0 ,50,8);
+				BATT_CHECK = 0;
 			}
 					
 			OgooD = 1;
@@ -314,7 +324,7 @@ void NoZflip(void) // FROM OFF BUTTON UP
 				noInterrupts();	// disable interrupts
 				BLINKPWM(70,70,70 ,150,40);
 				AllYourBaseAreBelongToUs = 1;
-				SLIDERPRO_FLAG = 0;
+				BATT_CHECK = 0;
 				ClearToGo = 0;
 				interrupts(); // enable interrupts
 			}

@@ -38,7 +38,8 @@ void PushYed(void)
 					{
 						Mode = (UserCmodes[CurrentUserBundle][CurrentUserMode]);
 					}
-
+						Serial.print(F("> MODE: "));
+						Serial.println(Mode);
 					eeCheck();
 					EEPROM.write(2,CurrentUserBundle);eeCheck();
 					EEPROM.write(3,CurrentUserMode);eeCheck();
@@ -102,9 +103,8 @@ void PushYed(void)
 				        //////////////////////////////////////////////////////
 						zAcc = 0;
 						delay(100);
-						//MMA7660.getRaw(&xAcc,&yAcc,&zAcc);
-						I2C_ACC_GET_XYZ(&xAcc,&yAcc,&zAcc);
-						Serial.print(F("  Z: "));Serial.println(zAcc);
+						zAcc = TWADC_ACC_GET_VAL(2);// z axis
+						Serial.print(F("  Push-Z: "));Serial.println(zAcc);
 						if (zAcc < -1)// check zflip here
 						{
 							VARIATION = 1;

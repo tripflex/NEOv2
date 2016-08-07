@@ -90,7 +90,7 @@ void PRIME_MORPH(int ColorTime, int BlankTime) //
 			{ // while ThisTime
 				MorphNonZero(xds);
 				ThisTime--;
-				mmaSensor(PMMAselect, PmmAxis, PAccelCounter, PAccelSensitivity);
+				mmaSensor(PMMAselect, PmmAxis, PAccelCounterDebouncer, PAccelSensitivity);
 			}// while ThisTime
 			xds++;
 			osmPWMSCCxyz(0,0,0, 0, BlankTime);
@@ -106,7 +106,7 @@ void PRIME_MORPH(int ColorTime, int BlankTime) //
 			{ // while ThisTime
 				MorphZero(xds);
 				ThisTime--;
-				mmaSensor(PMMAselect, PmmAxis, PAccelCounter, PAccelSensitivity);
+				mmaSensor(PMMAselect, PmmAxis, PAccelCounterDebouncer, PAccelSensitivity);
 			}// while ThisTime
 			xds++;
 			osmPWMSCCxyz(0,0,0, 0, BlankTime);

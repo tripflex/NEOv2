@@ -33,6 +33,9 @@ void OSMsetup(void)
 	digitalWrite(GREEN, LOW);
     digitalWrite(BLUE, LOW); // BLUE ON (just to know that we are here)
 	digitalWrite(BLUE_ARD, LOW);
+	
+	
+	
 }
 
 
@@ -73,6 +76,22 @@ void TimerMax(void)
 	TCCR2B |= (1 << CS20);
 
 	TIMSK2 |= (1 << OCIE2A); // TIMER2 INTERRUPT ENABLE
+
+
+
+
+// defines for setting and clearing register bits
+#ifndef cbi
+#define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+#endif
+#ifndef sbi
+#define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+#endif
+
+// set prescale to 16
+sbi(ADCSRA,ADPS2) ;
+cbi(ADCSRA,ADPS1) ;
+cbi(ADCSRA,ADPS0) ;
 
 
 ////////////////// not activated
