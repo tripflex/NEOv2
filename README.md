@@ -113,3 +113,29 @@ This is an unofficial repository, I have no association with osm.codes other tha
 * **2.5.7br**  
   - (2.5.63 release)
   - Rule 11
+
+* **2.5.75**
+  - Added Battery Power ADC levels
+  - ADC_I2C
+  - Added TWADC.ino
+  - Changed ACC_INIT.ino
+  - Leaving comments on big changes for education purposes only.
+
+* **2.5.7br-Kroma Edition / OSM1 & OSM**
+  - Support for new accelerometer (OSM2).
+  - Change one prime at the time with 3d gesture.
+  -  New “Switch” mode
+  -  Button Facing Up to change Prime A
+  -  Button Facing Down to change Prime B
+  -  Arduino: Support for Arduino 1.6.5
+  -  No more library dependent.
+
+* **2.5.8br OSM2POINT1 Compatible / OSM1 & OSM2.1**
+  - Support for new configuration (OSM2.1).
+  - Support for new accelerometer (OSM2).
+  - Change one prime at the time with 3d gesture.
+  - New “Switch” mode
+  - Button Facing Up to change Prime A
+  - Button Facing Down to change Prime B
+  - Arduino: Support for Arduino 1.6.5
+  - No more library dependent.
