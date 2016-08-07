@@ -1,10 +1,9 @@
 ```
-                                        ____   _____ __  __                     _
-                                       / __ \ / ____|  \/  |                   | |
-   __      ____      ____      __     | |  | | (___ | \  / |       ___ ___   __| | ___  ___
-   \ \ /\ / /\ \ /\ / /\ \ /\ / /     | |  | |\___ \| |\/| |      / __/ _ \ / _` |/ _ \/ __|
-    \ V  V /  \ V  V /  \ V  V /   _  | |__| |____) | |  | |  _  | (_| (_) | (_| |  __/\__ \
-     \_/\_/    \_/\_/    \_/\_/   (_)  \____/|_____/|_|  |_| (_)  \___\___/ \__,_|\___||___/
+                                     ___  ____  _____                     _           
+__      ____      ____      __      / _ \/ ___||  ___|       ___ ___   __| | ___  ___ 
+\ \ /\ / /\ \ /\ / /\ \ /\ / /     | | | \___ \| |_         / __/ _ \ / _` |/ _ \/ __|
+ \ V  V /  \ V  V /  \ V  V /   _  | |_| |___) |  _|    _  | (_| (_) | (_| |  __/\__ \
+  \_/\_/    \_/\_/    \_/\_/   (_)  \___/|____/|_|     (_)  \___\___/ \__,_|\___||___/
 ```
 ```
 57 65 20 68 61 76 65 20 61 6c 6c 20 74 68 65 20 6c 69 67 68 74 20 77 65 20 6e 65 65 64 2c 20 77 65 20
@@ -13,33 +12,27 @@
 
 ### Overview
 ---
-This is an unofficial repository, I have no association with osm.codes other than my love for Ramiro and the fact that he has released an open source microlight.  Check the OSM Mode Swap facebook group for latest version and information.
+This is an unofficial repository, I have no association with osm.codes other than my love for Ramiro and the fact that he has released an open source microlight.  ~~Check the OSM Mode Swap facebook group for latest version and information.~~
 
 - **OSM v2 Instructions**:
-  - http://osm.codes/web/wp-content/uploads/2015/12/OSM_NEO_2-5_instructions.jpg
+  - http://osf.guru/viewtopic.php?f=20&t=25
 
-*As of version 2.5.7br you need to use Arduino 1.6.5 as the latest version, 1.6.7 is currently not compatible*
+*As of version 2.5.8br you need to use Arduino 1.6.5 as the latest version, 1.6.7 is currently not compatible*
 - **Arduino 1.6.5**:
   - https://www.arduino.cc/en/Main/OldSoftwareReleases#previous
 
+### Legal Battle
+---
+If you are not already aware, there was a legal battle between Ramiro (the creator of the OSM) and Emazing Farts ... i mean, Emazing Lights ... that resulted in a settlement which essentially prevents Ramiro from producing anymore OSMs, and forced him to take down all the facebook groups.  Since that time, we as a community have come together, and started http://osf.guru (or http://osf.codes), which stands for Open Souce Flow.  This is where you will find all the information you need, as well as tutorials, downloads, and more.
 
+Thank you Ramiro for everything you have done, you have helped spark the fire that is Open Souce Flow, and we will continue on the path you started for us. 
+
+**No matter how hard they try, or how much money they spend, they will not stop us, our creativity, or our innovation.  You can try to stifle innovation because of your greed, but in the end, we will prevail.**
 
 ### Details
 ---
 * Credits: AAA_CREDITS.ino
-* ♒ NEO ♒ for the Open Source Microlight
-* Version: v2 Series
-* Date: 09-30-2015
-* Company: Quantum Hex LLC
-* Author: Ramiro Montes De Oca
-* Product Page: http://www.osm.codes
-* Support: http://support.osm.codes
-* Facebook Users Group: https://www.facebook.com/groups/osmModeSwap/
-* Facebook Dev Group: https://www.facebook.com/groups/OSMdevelopers/
-* Facebook Product Page: https://www.facebook.com/osmcodes
-*
 * This Software is licensed under Creative Commons Attribution-ShareAlike 4.0
-*
 
 ### Changelog
 ---
